@@ -1,0 +1,16 @@
+{
+  "name": "loja-dois-irmaos",
+  "version": "1.0.0",
+  "description": "Sistema web da Loja Dois Irmãos – Casa & Obra: catálogo, controle de estoque em tempo real e orçamentos.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node --no-warnings server.js",
+    "reset-db": "node --no-warnings src/resetar-banco.js"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "author": "Kaiky Linhares e Letícia Ferreira Silva",
+  "license": "MIT",
+  "private": true
+}

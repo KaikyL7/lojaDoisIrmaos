@@ -1,0 +1,12 @@
+# Banco de dados gerado ao iniciar o servidor
+data/*.db
+data/*.db-*
+
+# Imagens enviadas pelo painel
+public/uploads/*
+!public/uploads/.gitkeep
+
+node_modules/
+.DS_Store
+Thumbs.db
+.vscode/
