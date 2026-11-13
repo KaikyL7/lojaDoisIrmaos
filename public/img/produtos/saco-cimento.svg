@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="#F7F6F3"/><ellipse cx="200" cy="262" rx="130" ry="12" fill="#000" opacity=".08"/><path d="M120 70 Q200 52 280 70 L292 250 Q200 266 108 250 Z" fill="#C9C3B8"/>
+<path d="M120 70 Q200 52 280 70 L282 92 Q200 76 118 92 Z" fill="#000" opacity=".12"/>
+<rect x="114" y="140" width="172" height="58" fill="#111111"/>
+<text x="200" y="178" font-family="Arial,Helvetica,sans-serif" font-size="30" font-weight="700" text-anchor="middle" fill="#fff">CIMENTO</text>
+<text x="200" y="236" font-family="Arial,Helvetica,sans-serif" font-size="18" font-weight="700" text-anchor="middle" fill="#3a3a3a" opacity=".7">50 kg</text></svg>

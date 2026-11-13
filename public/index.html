@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loja Dois Irmãos – Casa &amp; Obra | Materiais de construção em Alvinópolis-MG</title>
+  <meta name="description" content="Materiais de construção, acabamentos, ferramentas, elétrica e hidráulica em Alvinópolis-MG. Consulte o catálogo com especificações técnicas.">
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+  <!-- Cabeçalho -->
+  <header class="topo-site">
+    <div class="container">
+      <a class="marca" href="/" aria-label="Loja Dois Irmãos – Casa & Obra, página inicial">
+        <img src="/img/logo-horizontal.jpg" alt="Logo Dois Irmãos – Casa & Obra">
+      </a>
+      <nav class="menu-site" aria-label="Menu principal">
+        <a href="#catalogo">Catálogo</a>
+        <a href="#sobre">A loja</a>
+        <a href="#contato">Contato</a>
+        <a class="btn btn-primario btn-pequeno" href="/login.html">Área do funcionário</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Banner principal -->
+    <section class="banner">
+      <div class="container">
+        <h1>Tudo para sua <em>casa</em> e sua <em>obra</em> em Alvinópolis</h1>
+        <p>Materiais de construção, acabamentos, ferramentas e componentes elétricos e hidráulicos.
+          Consulte as especificações de cada produto antes de pedir seu orçamento.</p>
+        <form class="busca-banner" id="form-busca" role="search">
+          <label for="busca" class="sr-only">Buscar produto</label>
+          <input type="search" id="busca" placeholder="Busque por nome, código ou medida (ex.: 25mm, CP II)">
+          <button class="btn btn-primario" type="submit">Buscar</button>
+        </form>
+      </div>
+    </section>
+
+    <div class="container">
+      <div class="destaques">
+        <div class="destaque">
+          <strong>Especificações técnicas</strong>
+          <span>Bitola, tipo, peso e indicação de uso para evitar confusão entre produtos parecidos.</span>
+        </div>
+        <div class="destaque">
+          <strong>Disponibilidade atualizada</strong>
+          <span>O catálogo mostra na hora quando um item está disponível ou esgotado.</span>
+        </div>
+        <div class="destaque">
+          <strong>Orçamento pelo código</strong>
+          <span>Informe o código do produto no WhatsApp e receba o orçamento certo.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Catálogo -->
+    <section class="secao" id="catalogo">
+      <div class="container">
+        <div class="secao-titulo">
+          <h2>Catálogo de produtos</h2>
+          <span class="ajuda" id="contador" aria-live="polite"></span>
+        </div>
+        <div class="categorias" id="categorias" aria-label="Filtrar por categoria"></div>
+        <div class="grade-produtos" id="grade"></div>
+        <p class="vazio oculto" id="vazio">Nenhum produto encontrado. Tente outra busca.</p>
+      </div>
+    </section>
+
+    <!-- Sobre a loja -->
+    <section class="secao secao-cinza" id="sobre">
+      <div class="container sobre">
+        <div>
+          <h2>Sobre a Dois Irmãos – Casa &amp; Obra</h2>
+          <p>Localizada no centro de Alvinópolis-MG, a Loja Dois Irmãos atua no comércio de materiais de construção,
+            acabamentos, ferramentas e componentes elétricos e hidráulicos, atendendo clientes da região em
+            construções, reformas e manutenções.</p>
+          <p>Com o nosso catálogo digital você confere a descrição completa de cada item e chega ao balcão
+            sabendo exatamente o que precisa.</p>
+        </div>
+        <div class="cartao">
+          <h3>O que você encontra aqui</h3>
+          <ul class="lista-check">
+            <li>Materiais básicos: cimento, argamassa e blocos</li>
+            <li>Hidráulica: tubos, conexões, registros e caixas d'água</li>
+            <li>Elétrica: cabos, disjuntores e tomadas</li>
+            <li>Tintas, massas e acabamentos</li>
+            <li>Ferramentas para obra e manutenção</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Rodapé / contato -->
+  <footer class="rodape-site" id="contato">
+    <div class="container">
+      <div class="rodape-grade">
+        <div>
+          <h3>Endereço</h3>
+          <p data-loja="endereco"></p>
+          <p data-loja="cidade"></p>
+        </div>
+        <div>
+          <h3>Contato</h3>
+          <p>Telefone e WhatsApp: <span data-loja="telefone"></span></p>
+          <p><a data-loja="whatsapp-link" href="#" target="_blank" rel="noopener">Chamar no WhatsApp</a></p>
+        </div>
+        <div>
+          <h3>Horário de funcionamento</h3>
+          <div data-loja="horarios"></div>
+        </div>
+      </div>
+      <p class="creditos">© <span data-loja="ano"></span> Loja Dois Irmãos – Casa &amp; Obra. Projeto acadêmico de Sistemas Web I – UFOP.</p>
+    </div>
+  </footer>
+
+  <!-- Detalhes do produto -->
+  <dialog id="janela-produto" aria-labelledby="titulo-produto">
+    <div class="dialog-topo">
+      <h2 id="titulo-produto">Produto</h2>
+      <button class="fechar" type="button" data-fechar aria-label="Fechar">&times;</button>
+    </div>
+    <div class="dialog-corpo" id="corpo-produto"></div>
+  </dialog>
+
+  <script src="/js/comum.js"></script>
+  <script src="/js/catalogo.js"></script>
+</body>
+</html>

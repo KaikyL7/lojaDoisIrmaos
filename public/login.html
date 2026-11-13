@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrar – Área do funcionário | Loja Dois Irmãos</title>
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body class="pagina-login">
+  <main class="caixa-login">
+    <form class="cartao" id="form-login" novalidate>
+      <img class="logo-login" src="/img/logo-horizontal.jpg" alt="Logo Dois Irmãos – Casa & Obra">
+      <h1 class="titulo-login">Área do funcionário</h1>
+      <p class="ajuda">Acesso restrito ao controle de estoque e orçamentos.</p>
+
+      <div id="erro" class="oculto" role="alert"></div>
+
+      <div class="campo">
+        <label for="login">Usuário</label>
+        <input id="login" name="login" autocomplete="username" required autofocus>
+      </div>
+      <div class="campo">
+        <label for="senha">Senha</label>
+        <input id="senha" name="senha" type="password" autocomplete="current-password" required>
+      </div>
+      <button class="btn btn-primario" type="submit">Entrar</button>
+    </form>
+    <a class="voltar-site" href="/">← Voltar para o catálogo</a>
+  </main>
+
+  <script src="/js/comum.js"></script>
+  <script src="/js/login.js"></script>
+</body>
+</html>
