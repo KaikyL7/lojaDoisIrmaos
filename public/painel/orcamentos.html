@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orçamentos | Painel – Loja Dois Irmãos</title>
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/css/estilo.css">
+  <link rel="stylesheet" href="/css/painel.css">
+</head>
+<body class="painel">
+  <div class="layout">
+    <main class="conteudo">
+      <div class="cabecalho-pagina">
+        <div>
+          <h1>Orçamentos</h1>
+          <p>Orçamentos emitidos, com validade e situação. Os preços ficam registrados na data de emissão.</p>
+        </div>
+        <div class="acoes">
+          <a class="btn btn-primario" href="/painel/orcamento-novo.html">+ Novo orçamento</a>
+        </div>
+      </div>
+
+      <form class="filtros" id="filtros">
+        <div class="campo campo-busca">
+          <label for="f-q">Buscar</label>
+          <input type="search" id="f-q" name="q" placeholder="Nome do cliente, telefone ou número">
+        </div>
+        <div class="campo">
+          <label for="f-situacao">Situação</label>
+          <select id="f-situacao" name="situacao">
+            <option value="">Todas</option>
+            <option value="emitido">Válidos</option>
+            <option value="expirado">Expirados</option>
+            <option value="convertido">Venda realizada</option>
+            <option value="renovado">Renovados</option>
+            <option value="cancelado">Cancelados</option>
+          </select>
+        </div>
+      </form>
+
+      <div class="tabela-rolagem">
+        <table class="tabela">
+          <thead>
+            <tr>
+              <th>Nº</th>
+              <th>Cliente</th>
+              <th>Emissão</th>
+              <th>Validade</th>
+              <th class="num">Itens</th>
+              <th class="num">Total</th>
+              <th>Situação</th>
+              <th>Atendente</th>
+              <th class="acoes-tabela"><span class="sr-only">Ações</span></th>
+            </tr>
+          </thead>
+          <tbody id="lista"></tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/comum.js"></script>
+  <script src="/js/painel.js"></script>
+  <script src="/js/painel-orcamentos.js"></script>
+</body>
+</html>

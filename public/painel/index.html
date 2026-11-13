@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Início | Painel – Loja Dois Irmãos</title>
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/css/estilo.css">
+  <link rel="stylesheet" href="/css/painel.css">
+</head>
+<body class="painel">
+  <div class="layout">
+    <main class="conteudo">
+      <div class="cabecalho-pagina">
+        <div>
+          <h1 id="saudacao">Olá!</h1>
+          <p>Resumo do estoque e do atendimento. <span class="ao-vivo">Atualizando em tempo real</span></p>
+        </div>
+        <div class="acoes">
+          <a class="btn btn-primario" href="/painel/orcamento-novo.html">+ Novo orçamento</a>
+          <a class="btn" href="/painel/movimentacoes.html">Registrar entrada/saída</a>
+        </div>
+      </div>
+
+      <section class="indicadores" id="indicadores" aria-label="Indicadores"></section>
+
+      <div class="duas-colunas">
+        <section class="cartao">
+          <div class="cartao-topo">
+            <h2>Reposição necessária</h2>
+            <a class="btn btn-pequeno" href="/painel/estoque.html">Ver estoque</a>
+          </div>
+          <p class="ajuda">Produtos esgotados ou abaixo do estoque mínimo.</p>
+          <ul class="lista-simples" id="alertas"></ul>
+        </section>
+
+        <section class="cartao">
+          <div class="cartao-topo">
+            <h2>Últimas movimentações</h2>
+            <a class="btn btn-pequeno" href="/painel/movimentacoes.html">Histórico</a>
+          </div>
+          <ul class="lista-simples" id="ultimas"></ul>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/comum.js"></script>
+  <script src="/js/painel.js"></script>
+  <script src="/js/painel-inicio.js"></script>
+</body>
+</html>

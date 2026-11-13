@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entradas e saídas | Painel – Loja Dois Irmãos</title>
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/css/estilo.css">
+  <link rel="stylesheet" href="/css/painel.css">
+</head>
+<body class="painel">
+  <div class="layout">
+    <main class="conteudo">
+      <div class="cabecalho-pagina">
+        <div>
+          <h1>Entradas e saídas</h1>
+          <p>Toda movimentação atualiza o saldo na hora e fica registrada no histórico.</p>
+        </div>
+      </div>
+
+      <div class="coluna-larga">
+        <section class="cartao">
+          <div class="cartao-topo">
+            <h2>Histórico de movimentações</h2>
+            <span class="ao-vivo">Tempo real</span>
+          </div>
+          <form class="filtros" id="filtros">
+            <div class="campo campo-busca">
+              <label for="h-produto">Produto</label>
+              <select id="h-produto" name="produto_id"><option value="">Todos</option></select>
+            </div>
+            <div class="campo">
+              <label for="h-tipo">Tipo</label>
+              <select id="h-tipo" name="tipo">
+                <option value="">Todos</option>
+                <option value="entrada">Entrada</option>
+                <option value="saida">Saída</option>
+                <option value="devolucao">Devolução</option>
+                <option value="ajuste">Ajuste</option>
+              </select>
+            </div>
+            <div class="campo">
+              <label for="h-de">De</label>
+              <input type="date" id="h-de" name="de">
+            </div>
+            <div class="campo">
+              <label for="h-ate">Até</label>
+              <input type="date" id="h-ate" name="ate">
+            </div>
+          </form>
+          <div class="tabela-rolagem">
+            <table class="tabela">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Produto</th>
+                  <th>Tipo</th>
+                  <th class="num">Variação</th>
+                  <th class="num">Saldo</th>
+                  <th>Funcionário</th>
+                  <th>Observação</th>
+                </tr>
+              </thead>
+              <tbody id="historico"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="cartao cartao-form">
+          <h2>Registrar movimentação</h2>
+          <form id="form-mov" novalidate>
+            <div class="escolha-tipo" role="radiogroup" aria-label="Tipo de movimentação">
+              <label><input type="radio" name="tipo" value="entrada" checked> Entrada</label>
+              <label><input type="radio" name="tipo" value="saida"> Saída</label>
+            </div>
+            <div id="mov-erro" class="oculto" role="alert"></div>
+            <div class="campo">
+              <label for="m-produto">Produto *</label>
+              <select id="m-produto" name="produto_id" required></select>
+            </div>
+            <div class="info-produto oculto" id="m-info"></div>
+            <div class="campo">
+              <label for="m-qtd">Quantidade *</label>
+              <input id="m-qtd" name="quantidade" type="number" min="1" step="1" required>
+            </div>
+            <div class="campo">
+              <label for="m-obs" id="m-obs-rotulo">Nota fiscal / fornecedor</label>
+              <input id="m-obs" name="observacao" maxlength="300">
+            </div>
+            <p class="ajuda">Responsável: <b id="m-funcionario"></b> · data e hora registradas automaticamente.</p>
+            <button class="btn btn-primario" type="submit" id="m-enviar">Registrar entrada</button>
+          </form>
+          <p class="ajuda">Devoluções de clientes são registradas em <a href="/painel/devolucoes.html">Devoluções</a>,
+            pois só voltam ao estoque após a conferência da mercadoria.</p>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/comum.js"></script>
+  <script src="/js/painel.js"></script>
+  <script src="/js/painel-movimentacoes.js"></script>
+</body>
+</html>

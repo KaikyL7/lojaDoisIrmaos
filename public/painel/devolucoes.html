@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Devoluções | Painel – Loja Dois Irmãos</title>
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/css/estilo.css">
+  <link rel="stylesheet" href="/css/painel.css">
+</head>
+<body class="painel">
+  <div class="layout">
+    <main class="conteudo">
+      <div class="cabecalho-pagina">
+        <div>
+          <h1>Devoluções</h1>
+          <p>A mercadoria devolvida só volta ao estoque depois que o gerente confirma que ela pode ser vendida.</p>
+        </div>
+      </div>
+
+      <div class="coluna-larga">
+        <section class="cartao">
+          <div class="cartao-topo">
+            <h2>Devoluções registradas</h2>
+          </div>
+          <div class="abas" role="tablist">
+            <button class="aba" type="button" role="tab" data-status="pendente" aria-selected="true">Aguardando conferência</button>
+            <button class="aba" type="button" role="tab" data-status="" aria-selected="false">Todas</button>
+          </div>
+          <div class="tabela-rolagem">
+            <table class="tabela">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Produto</th>
+                  <th class="num">Qtd.</th>
+                  <th>Motivo</th>
+                  <th>Situação</th>
+                  <th class="acoes-tabela"><span class="sr-only">Ações</span></th>
+                </tr>
+              </thead>
+              <tbody id="lista"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="cartao cartao-form">
+          <h2>Registrar devolução</h2>
+          <form id="form-dev" novalidate>
+            <div id="dev-erro" class="oculto" role="alert"></div>
+            <div class="campo">
+              <label for="d-produto">Produto *</label>
+              <select id="d-produto" name="produto_id" required></select>
+            </div>
+            <div class="campo">
+              <label for="d-qtd">Quantidade devolvida *</label>
+              <input id="d-qtd" name="quantidade" type="number" min="1" step="1" required>
+            </div>
+            <div class="campo">
+              <label for="d-motivo">Motivo *</label>
+              <textarea id="d-motivo" name="motivo" rows="3" maxlength="300" required
+                placeholder="Ex.: cliente comprou a bitola errada, sobra de obra, embalagem danificada…"></textarea>
+            </div>
+            <button class="btn btn-primario" type="submit">Registrar devolução</button>
+          </form>
+        </section>
+      </div>
+
+      <dialog id="janela-avaliar" aria-labelledby="av-titulo">
+        <form id="form-avaliar" novalidate>
+          <div class="dialog-topo">
+            <h2 id="av-titulo">Conferir devolução</h2>
+            <button class="fechar" type="button" data-fechar aria-label="Fechar">&times;</button>
+          </div>
+          <div class="dialog-corpo">
+            <div class="info-produto" id="av-info"></div>
+            <div id="av-erro" class="oculto" role="alert"></div>
+            <div class="campo">
+              <label for="av-parecer">Condição da mercadoria</label>
+              <textarea id="av-parecer" name="parecer" rows="3" maxlength="300"
+                placeholder="Obrigatório ao reprovar. Ex.: embalagem lacrada; saco rasgado e cimento empedrado…"></textarea>
+            </div>
+          </div>
+          <div class="dialog-rodape">
+            <button class="btn btn-perigo" type="button" id="btn-reprovar">Reprovar (não volta ao estoque)</button>
+            <button class="btn btn-sucesso" type="button" id="btn-aprovar">Aprovar e devolver ao estoque</button>
+          </div>
+        </form>
+      </dialog>
+    </main>
+  </div>
+
+  <script src="/js/comum.js"></script>
+  <script src="/js/painel.js"></script>
+  <script src="/js/painel-devolucoes.js"></script>
+</body>
+</html>

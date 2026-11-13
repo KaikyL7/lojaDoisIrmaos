@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conferência de estoque | Painel – Loja Dois Irmãos</title>
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/css/estilo.css">
+  <link rel="stylesheet" href="/css/painel.css">
+</head>
+<body class="painel">
+  <div class="layout">
+    <main class="conteudo">
+      <div class="cabecalho-pagina">
+        <div>
+          <h1>Conferência de estoque</h1>
+          <p>Compare a contagem física com o saldo do sistema. Cada divergência gera um ajuste com a quantidade anterior,
+            a quantidade corrigida e a justificativa.</p>
+        </div>
+        <div class="acoes">
+          <button class="btn btn-primario" type="button" id="btn-salvar">Confirmar conferência</button>
+        </div>
+      </div>
+
+      <div id="conf-resultado" class="oculto" role="status"></div>
+
+      <form class="filtros" id="filtros">
+        <div class="campo campo-busca">
+          <label for="c-busca">Filtrar produtos</label>
+          <input type="search" id="c-busca" placeholder="Nome ou código">
+        </div>
+        <div class="campo">
+          <label for="c-categoria">Categoria</label>
+          <select id="c-categoria"><option value="">Todas</option></select>
+        </div>
+      </form>
+
+      <div class="tabela-rolagem">
+        <table class="tabela">
+          <thead>
+            <tr>
+              <th>Produto</th>
+              <th class="num">Saldo no sistema</th>
+              <th class="num">Contagem física</th>
+              <th class="num">Diferença</th>
+              <th>Justificativa (obrigatória se houver diferença)</th>
+            </tr>
+          </thead>
+          <tbody id="lista"></tbody>
+        </table>
+      </div>
+      <p class="ajuda">Deixe a contagem em branco para os produtos que não foram conferidos agora.</p>
+    </main>
+  </div>
+
+  <script src="/js/comum.js"></script>
+  <script src="/js/painel.js"></script>
+  <script src="/js/painel-conferencia.js"></script>
+</body>
+</html>

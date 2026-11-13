@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Funcionários | Painel – Loja Dois Irmãos</title>
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/css/estilo.css">
+  <link rel="stylesheet" href="/css/painel.css">
+</head>
+<body class="painel">
+  <div class="layout">
+    <main class="conteudo">
+      <div class="cabecalho-pagina">
+        <div>
+          <h1>Funcionários</h1>
+          <p>Cada funcionário tem credenciais individuais. O perfil define o que ele pode fazer no sistema.</p>
+        </div>
+        <div class="acoes">
+          <button class="btn btn-primario" type="button" id="btn-novo">+ Novo funcionário</button>
+        </div>
+      </div>
+
+      <div class="duas-colunas">
+        <div class="tabela-rolagem">
+          <table class="tabela">
+            <thead>
+              <tr><th>Nome</th><th>Usuário</th><th>Perfil</th><th>Situação</th><th class="acoes-tabela"><span class="sr-only">Ações</span></th></tr>
+            </thead>
+            <tbody id="lista"></tbody>
+          </table>
+        </div>
+
+        <section class="cartao">
+          <h2>Permissões por perfil</h2>
+          <div class="tabela-rolagem">
+            <table class="tabela">
+              <thead><tr><th>Operação</th><th class="centro">Atendente</th><th class="centro">Gerente</th></tr></thead>
+              <tbody>
+                <tr><td>Consultar produtos e estoque</td><td class="centro">✓</td><td class="centro">✓</td></tr>
+                <tr><td>Emitir, renovar e finalizar orçamentos</td><td class="centro">✓</td><td class="centro">✓</td></tr>
+                <tr><td>Registrar entradas e saídas</td><td class="centro">✓</td><td class="centro">✓</td></tr>
+                <tr><td>Registrar devoluções</td><td class="centro">✓</td><td class="centro">✓</td></tr>
+                <tr><td>Aprovar/reprovar devoluções</td><td class="centro">—</td><td class="centro">✓</td></tr>
+                <tr><td>Cadastrar produtos e alterar preços</td><td class="centro">—</td><td class="centro">✓</td></tr>
+                <tr><td>Conferência e ajuste de estoque</td><td class="centro">—</td><td class="centro">✓</td></tr>
+                <tr><td>Gerenciar funcionários</td><td class="centro">—</td><td class="centro">✓</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <dialog id="janela" aria-labelledby="u-titulo">
+        <form id="form-usuario" novalidate>
+          <div class="dialog-topo">
+            <h2 id="u-titulo">Novo funcionário</h2>
+            <button class="fechar" type="button" data-fechar aria-label="Fechar">&times;</button>
+          </div>
+          <div class="dialog-corpo">
+            <div id="u-erro" class="oculto" role="alert"></div>
+            <div class="campo">
+              <label for="u-nome">Nome completo *</label>
+              <input id="u-nome" name="nome" required maxlength="100">
+            </div>
+            <div class="linha-campos">
+              <div class="campo">
+                <label for="u-login">Usuário (login) *</label>
+                <input id="u-login" name="login" required maxlength="50" autocomplete="off">
+              </div>
+              <div class="campo">
+                <label for="u-perfil">Perfil *</label>
+                <select id="u-perfil" name="perfil">
+                  <option value="atendente">Atendente</option>
+                  <option value="gerente">Gerente</option>
+                </select>
+              </div>
+            </div>
+            <div class="campo">
+              <label for="u-senha" id="u-senha-rotulo">Senha *</label>
+              <input id="u-senha" name="senha" type="password" minlength="6" autocomplete="new-password">
+              <span class="ajuda" id="u-senha-ajuda">Mínimo de 6 caracteres.</span>
+            </div>
+            <div class="campo oculto" id="campo-ativo">
+              <label for="u-ativo">Situação</label>
+              <select id="u-ativo" name="ativo">
+                <option value="1">Ativo</option>
+                <option value="0">Desativado (sem acesso)</option>
+              </select>
+            </div>
+          </div>
+          <div class="dialog-rodape">
+            <button class="btn" type="button" data-fechar>Cancelar</button>
+            <button class="btn btn-primario" type="submit">Salvar</button>
+          </div>
+        </form>
+      </dialog>
+    </main>
+  </div>
+
+  <script src="/js/comum.js"></script>
+  <script src="/js/painel.js"></script>
+  <script src="/js/painel-funcionarios.js"></script>
+</body>
+</html>

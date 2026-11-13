@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orçamento | Painel – Loja Dois Irmãos</title>
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/css/estilo.css">
+  <link rel="stylesheet" href="/css/painel.css">
+</head>
+<body class="painel">
+  <div class="layout">
+    <main class="conteudo">
+      <div class="cabecalho-pagina nao-imprimir">
+        <div>
+          <a href="/painel/orcamentos.html">← Voltar aos orçamentos</a>
+        </div>
+        <div class="acoes" id="acoes"></div>
+      </div>
+
+      <div id="aviso" class="oculto nao-imprimir" role="status"></div>
+
+      <article class="documento" id="documento">
+        <header class="documento-topo">
+          <img src="/img/logo-horizontal.jpg" alt="Dois Irmãos – Casa & Obra">
+          <div class="dados-loja">
+            <p><b data-loja="nome"></b></p>
+            <p data-loja="endereco"></p>
+            <p data-loja="cidade"></p>
+            <p>Tel./WhatsApp: <span data-loja="telefone"></span></p>
+          </div>
+        </header>
+        <div id="conteudo-orcamento"><p class="vazio">Carregando…</p></div>
+      </article>
+    </main>
+  </div>
+
+  <script src="/js/comum.js"></script>
+  <script src="/js/painel.js"></script>
+  <script src="/js/painel-orcamento.js"></script>
+</body>
+</html>

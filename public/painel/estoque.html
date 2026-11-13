@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Produtos e estoque | Painel – Loja Dois Irmãos</title>
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/css/estilo.css">
+  <link rel="stylesheet" href="/css/painel.css">
+</head>
+<body class="painel">
+  <div class="layout">
+    <main class="conteudo">
+      <div class="cabecalho-pagina">
+        <div>
+          <h1>Produtos e estoque</h1>
+          <p>Quantidade disponível de cada item. <span class="ao-vivo">Tempo real</span></p>
+        </div>
+        <div class="acoes">
+          <button class="btn btn-primario" type="button" id="btn-novo" data-gerente>+ Cadastrar produto</button>
+        </div>
+      </div>
+
+      <form class="filtros" id="filtros">
+        <div class="campo campo-busca">
+          <label for="f-busca">Buscar</label>
+          <input type="search" id="f-busca" name="q" placeholder="Nome, código, medida ou especificação">
+        </div>
+        <div class="campo">
+          <label for="f-categoria">Categoria</label>
+          <select id="f-categoria" name="categoria"><option value="">Todas</option></select>
+        </div>
+        <div class="campo">
+          <label for="f-situacao">Situação</label>
+          <select id="f-situacao" name="situacao">
+            <option value="">Todas</option>
+            <option value="baixo">Estoque baixo</option>
+            <option value="esgotado">Esgotados</option>
+          </select>
+        </div>
+        <div class="campo" data-gerente>
+          <label for="f-inativos">Mostrar</label>
+          <select id="f-inativos" name="inativos">
+            <option value="">Somente ativos</option>
+            <option value="1">Incluir desativados</option>
+          </select>
+        </div>
+      </form>
+
+      <div class="tabela-rolagem">
+        <table class="tabela">
+          <thead>
+            <tr>
+              <th>Produto</th>
+              <th>Categoria</th>
+              <th class="num">Preço</th>
+              <th class="num">Disponível</th>
+              <th class="num">Mínimo</th>
+              <th>Situação</th>
+              <th class="acoes-tabela"><span class="sr-only">Ações</span></th>
+            </tr>
+          </thead>
+          <tbody id="lista"></tbody>
+        </table>
+      </div>
+
+      <!-- Detalhes do produto -->
+      <dialog id="janela-detalhes" aria-labelledby="det-titulo">
+        <div class="dialog-topo">
+          <h2 id="det-titulo">Produto</h2>
+          <button class="fechar" type="button" data-fechar aria-label="Fechar">&times;</button>
+        </div>
+        <div class="dialog-corpo" id="det-corpo"></div>
+      </dialog>
+
+      <!-- Cadastro / edição (somente gerente) -->
+      <dialog id="janela-form" aria-labelledby="form-titulo">
+        <form id="form-produto" novalidate>
+          <div class="dialog-topo">
+            <h2 id="form-titulo">Cadastrar produto</h2>
+            <button class="fechar" type="button" data-fechar aria-label="Fechar">&times;</button>
+          </div>
+          <div class="dialog-corpo">
+            <div id="form-erro" class="oculto" role="alert"></div>
+            <div class="linha-campos">
+              <div class="campo">
+                <label for="p-nome">Nome do produto *</label>
+                <input id="p-nome" name="nome" required maxlength="120">
+              </div>
+              <div class="campo">
+                <label for="p-codigo">Código de identificação</label>
+                <input id="p-codigo" name="codigo" maxlength="30" placeholder="Ex.: HI-005">
+              </div>
+            </div>
+            <div class="linha-campos">
+              <div class="campo">
+                <label for="p-categoria">Categoria</label>
+                <select id="p-categoria" name="categoria_id"></select>
+              </div>
+              <div class="campo">
+                <label for="p-unidade">Unidade de medida *</label>
+                <input id="p-unidade" name="unidade" required maxlength="15" list="unidades" placeholder="un, saco, m², rolo…">
+                <datalist id="unidades">
+                  <option value="un"><option value="saco"><option value="barra"><option value="rolo">
+                  <option value="lata"><option value="balde"><option value="m²"><option value="m"><option value="kg"><option value="caixa">
+                </datalist>
+              </div>
+            </div>
+            <div class="linha-campos">
+              <div class="campo">
+                <label for="p-preco">Preço de venda (R$) *</label>
+                <input id="p-preco" name="preco" required inputmode="decimal" placeholder="0,00">
+              </div>
+              <div class="campo" id="campo-qtd-inicial">
+                <label for="p-quantidade">Quantidade inicial *</label>
+                <input id="p-quantidade" name="quantidade" type="number" min="0" step="1" value="0" required>
+                <span class="ajuda">Registrada como entrada no histórico.</span>
+              </div>
+              <div class="campo">
+                <label for="p-minimo">Estoque mínimo</label>
+                <input id="p-minimo" name="estoque_minimo" type="number" min="0" step="1" value="5">
+                <span class="ajuda">Abaixo disso o sistema alerta para reposição.</span>
+              </div>
+            </div>
+            <p class="aviso aviso-info oculto" id="aviso-qtd">A quantidade só muda por movimentações (entrada, saída,
+              devolução ou conferência), para manter o histórico confiável.</p>
+            <div class="campo">
+              <label for="p-descricao">Descrição</label>
+              <textarea id="p-descricao" name="descricao" maxlength="1000" rows="2"></textarea>
+            </div>
+            <div class="campo">
+              <label for="p-espec">Especificações técnicas</label>
+              <textarea id="p-espec" name="especificacoes" maxlength="2000" rows="4" placeholder="Uma por linha, no formato Chave: valor&#10;Diâmetro: 25 mm&#10;Comprimento: 6 m"></textarea>
+              <span class="ajuda">Ajudam a diferenciar produtos com nomes parecidos.</span>
+            </div>
+            <div class="campo">
+              <span class="rotulo">Imagem do produto *</span>
+              <div class="linha-campos">
+                <div>
+                  <img class="previa-imagem" id="previa" src="/img/produtos/saco-cimento.svg" alt="Prévia da imagem">
+                </div>
+                <div>
+                  <label class="btn btn-pequeno" for="p-foto">Enviar foto (PNG, JPG ou WEBP, até 2 MB)</label>
+                  <input class="sr-only" id="p-foto" type="file" accept="image/png,image/jpeg,image/webp">
+                  <p class="ajuda">ou escolha uma ilustração:</p>
+                </div>
+              </div>
+              <div class="galeria-ilustracoes" id="galeria"></div>
+            </div>
+          </div>
+          <div class="dialog-rodape">
+            <button class="btn btn-perigo" type="button" id="btn-ativo">Desativar produto</button>
+            <button class="btn" type="button" data-fechar>Cancelar</button>
+            <button class="btn btn-primario" type="submit">Salvar</button>
+          </div>
+        </form>
+      </dialog>
+    </main>
+  </div>
+
+  <script src="/js/comum.js"></script>
+  <script src="/js/painel.js"></script>
+  <script src="/js/painel-estoque.js"></script>
+</body>
+</html>

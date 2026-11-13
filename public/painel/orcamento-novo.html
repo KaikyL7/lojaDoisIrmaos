@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Novo orçamento | Painel – Loja Dois Irmãos</title>
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/css/estilo.css">
+  <link rel="stylesheet" href="/css/painel.css">
+</head>
+<body class="painel">
+  <div class="layout">
+    <main class="conteudo">
+      <div class="cabecalho-pagina">
+        <div>
+          <h1>Novo orçamento</h1>
+          <p>Busque pelo código ou pelas especificações para escolher o item certo. Produtos esgotados não podem ser orçados.</p>
+        </div>
+      </div>
+
+      <div class="duas-colunas">
+        <section class="cartao">
+          <h2>1. Escolha os produtos</h2>
+          <div class="campo">
+            <label for="o-busca">Buscar produto</label>
+            <input type="search" id="o-busca" placeholder="Ex.: 25mm, CP V, cabo 4mm, HI-001">
+          </div>
+          <div class="resultados-busca" id="resultados" aria-live="polite"></div>
+        </section>
+
+        <section class="cartao">
+          <h2>2. Dados do orçamento</h2>
+          <form id="form-orc" novalidate>
+            <div id="orc-erro" class="oculto" role="alert"></div>
+            <div class="campo">
+              <label for="o-cliente">Nome do cliente *</label>
+              <input id="o-cliente" name="cliente_nome" required maxlength="120">
+            </div>
+            <div class="linha-campos">
+              <div class="campo">
+                <label for="o-telefone">Telefone / WhatsApp</label>
+                <input id="o-telefone" name="cliente_telefone" maxlength="30" inputmode="tel">
+              </div>
+              <div class="campo">
+                <label for="o-doc">CPF / CNPJ</label>
+                <input id="o-doc" name="cliente_documento" maxlength="30">
+              </div>
+              <div class="campo">
+                <label for="o-validade">Validade (dias)</label>
+                <input id="o-validade" name="validade_dias" type="number" min="1" max="30" value="7">
+              </div>
+            </div>
+
+            <div class="tabela-rolagem">
+              <table class="tabela">
+                <thead>
+                  <tr><th>Produto</th><th class="num">Qtd.</th><th class="num">Preço unit.</th><th class="num">Subtotal</th><th></th></tr>
+                </thead>
+                <tbody id="itens"></tbody>
+              </table>
+            </div>
+            <div class="total-orcamento"><span>Total</span><span id="total">R$ 0,00</span></div>
+
+            <div class="campo">
+              <label for="o-obs">Observações</label>
+              <textarea id="o-obs" name="observacoes" rows="2" maxlength="500" placeholder="Condições de pagamento, entrega…"></textarea>
+            </div>
+            <button class="btn btn-primario" type="submit" id="btn-emitir">Emitir orçamento</button>
+          </form>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/comum.js"></script>
+  <script src="/js/painel.js"></script>
+  <script src="/js/painel-orcamento-novo.js"></script>
+</body>
+</html>
