@@ -1,59 +1,77 @@
 // Autenticação de funcionários e controle de permissões por perfil
-const { db } = require('./db');
-const { ErroHttp, lerCookies } = require('./http');
+const { consultarUm, consultar } = require('./db');
+const { ErroHttp } = require('./erros');
 
 const NOME_COOKIE = 'sessao';
 const DURACAO_SESSAO_HORAS = 8; // um turno de trabalho
+const producao = process.env.NODE_ENV === 'production';
 
-/** Retorna o funcionário logado (ou null) a partir do cookie de sessão. */
-function usuarioDaRequisicao(req) {
+function lerCookies(req) {
+  const cookies = {};
+  for (const par of (req.headers.cookie || '').split(';')) {
+    const i = par.indexOf('=');
+    if (i > 0) cookies[par.slice(0, i).trim()] = decodeURIComponent(par.slice(i + 1).trim());
+  }
+  return cookies;
+}
+
+function tokenDaRequisicao(req) {
   const token = lerCookies(req)[NOME_COOKIE];
-  if (!token || !/^[a-f0-9]{64}$/.test(token)) return null;
-  const u = db
-    .prepare(
+  return token && /^[a-f0-9]{64}$/.test(token) ? token : null;
+}
+
+/** Middleware: coloca o funcionário logado (ou null) em req.usuario. */
+async function carregarUsuario(req, res, next) {
+  req.usuario = null;
+  const token = tokenDaRequisicao(req);
+  if (token) {
+    req.usuario = await consultarUm(
       `SELECT u.id, u.nome, u.login, u.perfil
          FROM sessoes s JOIN usuarios u ON u.id = s.usuario_id
-        WHERE s.token = ? AND s.expira_em > datetime('now', 'localtime') AND u.ativo = 1`
-    )
-    .get(token);
-  return u ? { ...u } : null;
-}
-
-function criarSessao(usuarioId, token) {
-  db.prepare(
-    `INSERT INTO sessoes (token, usuario_id, expira_em)
-     VALUES (?, ?, datetime('now', 'localtime', '+${DURACAO_SESSAO_HORAS} hours'))`
-  ).run(token, usuarioId);
-  // Limpa sessões vencidas
-  db.prepare("DELETE FROM sessoes WHERE expira_em <= datetime('now', 'localtime')").run();
-}
-
-function cookieSessao(token) {
-  return `${NOME_COOKIE}=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${DURACAO_SESSAO_HORAS * 3600}`;
-}
-
-function cookieSaida() {
-  return `${NOME_COOKIE}=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0`;
-}
-
-// "Middlewares" usados nas rotas -----------------------------------------
-function exigirLogin(req, res, ctx) {
-  if (!ctx.usuario) throw new ErroHttp(401, 'Faça login para continuar.');
-}
-
-function exigirGerente(req, res, ctx) {
-  exigirLogin(req, res, ctx);
-  if (ctx.usuario.perfil !== 'gerente') {
-    throw new ErroHttp(403, 'Apenas funcionários com perfil Gerente podem realizar esta operação.');
+        WHERE s.token = $1 AND s.expira_em > now() AND u.ativo`,
+      [token]
+    );
   }
+  next();
+}
+
+async function criarSessao(usuarioId, token) {
+  await consultar(
+    `INSERT INTO sessoes (token, usuario_id, expira_em) VALUES ($1, $2, now() + $3::interval)`,
+    [token, usuarioId, `${DURACAO_SESSAO_HORAS} hours`]
+  );
+  await consultar('DELETE FROM sessoes WHERE expira_em <= now()');
+}
+
+function opcoesCookie() {
+  return {
+    httpOnly: true,
+    sameSite: 'strict',
+    secure: producao, // só por HTTPS quando publicado
+    path: '/',
+    maxAge: DURACAO_SESSAO_HORAS * 3600 * 1000,
+  };
+}
+
+function exigirLogin(req, res, next) {
+  if (!req.usuario) return next(new ErroHttp(401, 'Faça login para continuar.'));
+  next();
+}
+
+function exigirGerente(req, res, next) {
+  if (!req.usuario) return next(new ErroHttp(401, 'Faça login para continuar.'));
+  if (req.usuario.perfil !== 'gerente') {
+    return next(new ErroHttp(403, 'Apenas funcionários com perfil Gerente podem realizar esta operação.'));
+  }
+  next();
 }
 
 module.exports = {
   NOME_COOKIE,
-  usuarioDaRequisicao,
+  tokenDaRequisicao,
+  carregarUsuario,
   criarSessao,
-  cookieSessao,
-  cookieSaida,
+  opcoesCookie,
   exigirLogin,
   exigirGerente,
 };

@@ -1,9 +1,11 @@
 // Cadastro de funcionários (somente gerente)
-const { db } = require('../db');
-const { rota, enviarJson, ErroHttp, texto } = require('../http');
+const express = require('express');
+const { consultar, consultarUm } = require('../db');
+const { ErroHttp, texto, id } = require('../erros');
 const { exigirGerente } = require('../autenticacao');
 const { gerarHashSenha } = require('../seguranca');
 
+const rotas = express.Router();
 const PERFIS = ['atendente', 'gerente'];
 
 function validarPerfil(perfil) {
@@ -17,54 +19,57 @@ function validarSenha(senha) {
   return s;
 }
 
-function gerentesAtivos(excetoId) {
-  return db.prepare("SELECT COUNT(*) AS n FROM usuarios WHERE perfil = 'gerente' AND ativo = 1 AND id <> ?")
-    .get(excetoId).n;
-}
-
-rota('GET', '/api/usuarios', exigirGerente, (req, res) => {
-  const usuarios = db.prepare('SELECT id, nome, login, perfil, ativo, criado_em FROM usuarios ORDER BY nome').all();
-  enviarJson(res, 200, { usuarios });
+rotas.get('/usuarios', exigirGerente, async (req, res) => {
+  const usuarios = await consultar('SELECT id, nome, login, perfil, ativo, criado_em FROM usuarios ORDER BY nome');
+  res.json({ usuarios });
 });
 
-rota('POST', '/api/usuarios', exigirGerente, (req, res, ctx) => {
-  const nome = texto(ctx.body.nome, 'nome', { obrigatorio: true, max: 100 });
-  const login = texto(ctx.body.login, 'usuário', { obrigatorio: true, max: 50 }).toLowerCase();
+rotas.post('/usuarios', exigirGerente, async (req, res) => {
+  const nome = texto(req.body.nome, 'nome', { obrigatorio: true, max: 100 });
+  const login = texto(req.body.login, 'usuário', { obrigatorio: true, max: 50 }).toLowerCase();
   if (!/^[a-z0-9._-]{3,50}$/.test(login)) {
     throw new ErroHttp(400, 'O usuário deve ter de 3 a 50 caracteres: letras, números, ponto, hífen ou sublinhado.');
   }
-  const perfil = validarPerfil(ctx.body.perfil);
-  const senha = validarSenha(ctx.body.senha);
-  try {
-    const r = db.prepare('INSERT INTO usuarios (nome, login, senha_hash, perfil) VALUES (?, ?, ?, ?)')
-      .run(nome, login, gerarHashSenha(senha), perfil);
-    enviarJson(res, 201, { id: Number(r.lastInsertRowid) });
-  } catch {
+  const perfil = validarPerfil(req.body.perfil);
+  const senha = validarSenha(req.body.senha);
+  if (await consultarUm('SELECT 1 FROM usuarios WHERE login = $1', [login])) {
     throw new ErroHttp(409, 'Já existe um funcionário com esse usuário.');
   }
+  const u = await consultarUm(
+    'INSERT INTO usuarios (nome, login, senha_hash, perfil) VALUES ($1, $2, $3, $4) RETURNING id',
+    [nome, login, gerarHashSenha(senha), perfil]
+  );
+  res.status(201).json({ id: u.id });
 });
 
-rota('PUT', '/api/usuarios/:id', exigirGerente, (req, res, ctx) => {
-  const id = Number(ctx.params.id);
-  const u = db.prepare('SELECT * FROM usuarios WHERE id = ?').get(id);
+rotas.put('/usuarios/:id', exigirGerente, async (req, res) => {
+  const usuarioId = id(req.params.id, 'Funcionário');
+  const u = await consultarUm('SELECT perfil FROM usuarios WHERE id = $1', [usuarioId]);
   if (!u) throw new ErroHttp(404, 'Funcionário não encontrado.');
 
-  const nome = texto(ctx.body.nome, 'nome', { obrigatorio: true, max: 100 });
-  const perfil = validarPerfil(ctx.body.perfil);
-  const ativo = ctx.body.ativo ? 1 : 0;
+  const nome = texto(req.body.nome, 'nome', { obrigatorio: true, max: 100 });
+  const perfil = validarPerfil(req.body.perfil);
+  const ativo = req.body.ativo === true;
 
-  // Evita que a loja fique sem nenhum gerente ativo
-  if ((perfil !== 'gerente' || !ativo) && u.perfil === 'gerente' && gerentesAtivos(id) === 0) {
-    throw new ErroHttp(409, 'É preciso manter pelo menos um gerente ativo no sistema.');
+  // A loja nunca fica sem nenhum gerente ativo
+  if ((perfil !== 'gerente' || !ativo) && u.perfil === 'gerente') {
+    const outros = await consultarUm(
+      "SELECT COUNT(*)::int AS n FROM usuarios WHERE perfil = 'gerente' AND ativo AND id <> $1", [usuarioId]
+    );
+    if (outros.n === 0) throw new ErroHttp(409, 'É preciso manter pelo menos um gerente ativo no sistema.');
   }
-  if (id === ctx.usuario.id && !ativo) throw new ErroHttp(409, 'Você não pode desativar o próprio usuário.');
+  if (usuarioId === req.usuario.id && !ativo) throw new ErroHttp(409, 'Você não pode desativar o próprio usuário.');
 
-  db.prepare('UPDATE usuarios SET nome = ?, perfil = ?, ativo = ? WHERE id = ?').run(nome, perfil, ativo, id);
-  if (ctx.body.nova_senha) {
-    db.prepare('UPDATE usuarios SET senha_hash = ? WHERE id = ?').run(gerarHashSenha(validarSenha(ctx.body.nova_senha)), id);
+  await consultar('UPDATE usuarios SET nome = $1, perfil = $2, ativo = $3 WHERE id = $4', [nome, perfil, ativo, usuarioId]);
+  if (req.body.nova_senha) {
+    await consultar('UPDATE usuarios SET senha_hash = $1 WHERE id = $2',
+      [gerarHashSenha(validarSenha(req.body.nova_senha)), usuarioId]);
   }
-  if ((!ativo || ctx.body.nova_senha) && id !== ctx.usuario.id) {
-    db.prepare('DELETE FROM sessoes WHERE usuario_id = ?').run(id); // encerra sessões abertas
+  // Desativou ou trocou a senha de outra pessoa: encerra as sessões abertas dela
+  if ((!ativo || req.body.nova_senha) && usuarioId !== req.usuario.id) {
+    await consultar('DELETE FROM sessoes WHERE usuario_id = $1', [usuarioId]);
   }
-  enviarJson(res, 200, { ok: true });
+  res.json({ ok: true });
 });
+
+module.exports = rotas;

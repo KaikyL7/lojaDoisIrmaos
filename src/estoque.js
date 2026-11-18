@@ -1,23 +1,21 @@
 // Regra central do estoque: toda alteração de saldo passa por aqui.
 // Assim o saldo e o histórico de movimentações nunca ficam diferentes.
-const { db } = require('./db');
-const { ErroHttp } = require('./http');
-
-const NOMES_TIPO = { entrada: 'Entrada', saida: 'Saída', devolucao: 'Devolução', ajuste: 'Ajuste' };
+const { ErroHttp } = require('./erros');
 
 /**
- * Movimenta o estoque de um produto (deve ser chamada dentro de transacao()).
- * @param {object} m
- * @param {number} m.produtoId
- * @param {'entrada'|'saida'|'devolucao'|'ajuste'} m.tipo
- * @param {number} m.variacao  quantidade a somar (negativa na saída)
- * @param {number} m.usuarioId funcionário responsável
- * @param {string} [m.observacao]
- * @param {number} [m.orcamentoId]
- * @param {number} [m.devolucaoId]
+ * Movimenta o estoque de um produto. Deve ser chamada dentro de transacao(),
+ * recebendo o "cliente" da transação.
+ *
+ * O "SELECT ... FOR UPDATE" trava a linha do produto até o fim da transação:
+ * se dois atendentes venderem o mesmo item ao mesmo tempo, o segundo espera
+ * o primeiro terminar e enxerga o saldo já atualizado.
  */
-function movimentar({ produtoId, tipo, variacao, usuarioId, observacao = null, orcamentoId = null, devolucaoId = null }) {
-  const p = db.prepare('SELECT id, nome, quantidade, unidade, ativo FROM produtos WHERE id = ?').get(produtoId);
+async function movimentar(cliente, { produtoId, tipo, variacao, usuarioId, observacao = null, orcamentoId = null, devolucaoId = null }) {
+  const { rows } = await cliente.query(
+    'SELECT id, nome, quantidade, unidade, ativo FROM produtos WHERE id = $1 FOR UPDATE',
+    [produtoId]
+  );
+  const p = rows[0];
   if (!p) throw new ErroHttp(404, 'Produto não encontrado.');
   if (!p.ativo && tipo === 'saida') throw new ErroHttp(409, `O produto "${p.nome}" está desativado.`);
 
@@ -32,18 +30,19 @@ function movimentar({ produtoId, tipo, variacao, usuarioId, observacao = null, o
     );
   }
 
-  db.prepare("UPDATE produtos SET quantidade = ?, atualizado_em = datetime('now', 'localtime') WHERE id = ?")
-    .run(saldoPosterior, produtoId);
+  await cliente.query('UPDATE produtos SET quantidade = $1 WHERE id = $2', [saldoPosterior, produtoId]);
 
-  const r = db.prepare(
+  const mov = await cliente.query(
     `INSERT INTO movimentacoes
        (produto_id, tipo, quantidade, saldo_anterior, saldo_posterior, observacao, usuario_id, orcamento_id, devolucao_id)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
-  ).run(produtoId, tipo, Math.abs(variacao), saldoAnterior, saldoPosterior, observacao || null, usuarioId,
-    orcamentoId, devolucaoId);
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+     RETURNING id`,
+    [produtoId, tipo, Math.abs(variacao), saldoAnterior, saldoPosterior, observacao || null, usuarioId,
+      orcamentoId, devolucaoId]
+  );
 
   return {
-    movimentacao_id: Number(r.lastInsertRowid),
+    movimentacao_id: mov.rows[0].id,
     produto_id: produtoId,
     produto: p.nome,
     tipo,
@@ -52,4 +51,4 @@ function movimentar({ produtoId, tipo, variacao, usuarioId, observacao = null, o
   };
 }
 
-module.exports = { movimentar, NOMES_TIPO };
+module.exports = { movimentar };
