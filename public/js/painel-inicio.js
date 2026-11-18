@@ -1,7 +1,32 @@
 // Tela inicial do painel: indicadores, alertas de reposição e últimas movimentações
 
+/** Gráfico de barras (SVG) com as unidades que entraram e saíram por dia. */
+function desenharGrafico(porDia) {
+  const L = 720, A = 220, esq = 40, base = 190, topo = 16;
+  const maximo = Math.max(1, ...porDia.flatMap((d) => [d.entradas, d.saidas]));
+  const passo = Math.pow(10, Math.floor(Math.log10(maximo)));
+  const teto = Math.ceil(maximo / passo) * passo;
+  const y = (v) => base - (v / teto) * (base - topo);
+  const largura = (L - esq - 8) / porDia.length;
+  const barra = Math.min(16, largura / 2 - 3);
+  const linhas = [0, teto / 2, teto].map((v) => `
+    <line x1="${esq}" x2="${L - 4}" y1="${y(v)}" y2="${y(v)}" class="g-grade"/>
+    <text x="${esq - 8}" y="${y(v) + 4}" text-anchor="end" class="g-eixo">${Math.round(v)}</text>`).join('');
+  const barras = porDia.map((d, i) => {
+    const cx = esq + largura * i + largura / 2;
+    const [ano, mes, dia] = d.dia.split('-');
+    return `<g><title>${dia}/${mes}: ${d.entradas} entraram, ${d.saidas} saíram</title>
+      <rect x="${cx - barra - 1}" y="${y(d.entradas)}" width="${barra}" height="${base - y(d.entradas)}" rx="2" class="g-entrada"/>
+      <rect x="${cx + 1}" y="${y(d.saidas)}" width="${barra}" height="${base - y(d.saidas)}" rx="2" class="g-saida"/>
+      ${i % 2 === porDia.length % 2 ? '' : `<text x="${cx}" y="${base + 18}" text-anchor="middle" class="g-eixo">${dia}/${mes}</text>`}</g>`;
+  }).join('');
+  document.getElementById('grafico').innerHTML =
+    `<svg viewBox="0 0 ${L} ${A}" preserveAspectRatio="xMidYMid meet" aria-hidden="true">${linhas}${barras}</svg>`;
+}
+
 async function carregarResumo() {
-  const { totais, alertas, ultimas } = await api('/api/resumo');
+  const { totais, alertas, ultimas, por_dia: porDia } = await api('/api/resumo');
+  desenharGrafico(porDia);
 
   document.getElementById('indicadores').innerHTML = `
     <a class="indicador" href="/painel/estoque.html"><span>Produtos ativos</span><strong>${totais.produtos}</strong></a>

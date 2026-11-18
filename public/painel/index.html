@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Início | Painel – Loja Dois Irmãos</title>
   <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap">
   <link rel="stylesheet" href="/css/estilo.css">
   <link rel="stylesheet" href="/css/painel.css">
 </head>
@@ -23,6 +26,14 @@
       </div>
 
       <section class="indicadores" id="indicadores" aria-label="Indicadores"></section>
+
+      <section class="cartao grafico-cartao">
+        <div class="cartao-topo">
+          <h2>Entradas e saídas nos últimos 14 dias</h2>
+          <div class="legenda"><span class="leg-entrada">Entradas e devoluções</span><span class="leg-saida">Saídas</span></div>
+        </div>
+        <div id="grafico" class="grafico" role="img" aria-label="Unidades que entraram e saíram do estoque por dia"></div>
+      </section>
 
       <div class="duas-colunas">
         <section class="cartao">

@@ -124,6 +124,8 @@ async function abrirFormulario(id) {
     f.estoque_minimo.value = editando.estoque_minimo;
     f.descricao.value = editando.descricao || '';
     f.especificacoes.value = editando.especificacoes || '';
+    f.grupo_semelhanca.value = editando.grupo_semelhanca || '';
+    f.destaque.checked = Boolean(editando.destaque);
     imagemEscolhida = editando.imagem;
     btnAtivo.textContent = editando.ativo ? 'Desativar produto' : 'Reativar produto';
   } else {

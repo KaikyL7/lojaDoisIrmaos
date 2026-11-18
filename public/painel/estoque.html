@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Produtos e estoque | Painel – Loja Dois Irmãos</title>
   <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap">
   <link rel="stylesheet" href="/css/estilo.css">
   <link rel="stylesheet" href="/css/painel.css">
 </head>
@@ -132,6 +135,17 @@
               <label for="p-espec">Especificações técnicas</label>
               <textarea id="p-espec" name="especificacoes" maxlength="2000" rows="4" placeholder="Uma por linha, no formato Chave: valor&#10;Diâmetro: 25 mm&#10;Comprimento: 6 m"></textarea>
               <span class="ajuda">Ajudam a diferenciar produtos com nomes parecidos.</span>
+            </div>
+            <div class="linha-campos">
+              <div class="campo">
+                <label for="p-grupo">Grupo de produtos parecidos</label>
+                <input id="p-grupo" name="grupo_semelhanca" maxlength="40" placeholder="Ex.: tubo-soldavel">
+                <span class="ajuda">Produtos com o mesmo grupo aparecem lado a lado no quadro "Não confunda" do site.</span>
+              </div>
+              <div class="campo">
+                <span class="rotulo">Página inicial</span>
+                <label class="opcao-check"><input type="checkbox" id="p-destaque" name="destaque"> Mostrar em "Mais procurados"</label>
+              </div>
             </div>
             <div class="campo">
               <span class="rotulo">Imagem do produto *</span>

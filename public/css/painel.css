@@ -408,3 +408,16 @@ table.tabela {
 }
 .colunas-orcamento { grid-template-columns: 1fr 1.4fr; align-items: start; }
 @media (max-width: 1000px) { .colunas-orcamento { grid-template-columns: 1fr; } }
+
+/* Gráfico do painel inicial */
+.grafico-cartao { margin-bottom: 1.25rem; }
+.grafico svg { width: 100%; height: auto; display: block; }
+.g-grade { stroke: var(--borda); stroke-width: 1; }
+.g-eixo { font-size: 11px; fill: var(--texto-suave); font-family: var(--fonte); }
+.g-entrada { fill: var(--grafite); }
+.g-saida { fill: var(--ouro); }
+.legenda { display: flex; gap: 1rem; font-size: 0.85rem; color: var(--texto-suave); flex-wrap: wrap; }
+.legenda span::before { content: ""; display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.leg-entrada::before { background: var(--grafite); }
+.leg-saida::before { background: var(--ouro); }
+.cabecalho-pagina h1 { font-size: 1.75rem; }
