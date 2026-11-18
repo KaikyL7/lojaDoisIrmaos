@@ -3,130 +3,193 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Loja Dois Irmãos – Casa &amp; Obra | Materiais de construção em Alvinópolis-MG</title>
-  <meta name="description" content="Materiais de construção, acabamentos, ferramentas, elétrica e hidráulica em Alvinópolis-MG. Consulte o catálogo com especificações técnicas.">
+  <title>Dois Irmãos – Casa & Obra | Materiais de construção em Alvinópolis-MG</title>
+  <meta name="description" content="Materiais de construção, acabamentos, ferramentas, elétrica e hidráulica em Alvinópolis-MG. Catálogo com especificações técnicas e disponibilidade em tempo real.">
   <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap">
   <link rel="stylesheet" href="/css/estilo.css">
 </head>
 <body>
-  <!-- Cabeçalho -->
+  <a class="sr-only" href="#conteudo">Pular para o conteúdo</a>
+  <div class="faixa-topo">
+    <div class="container">
+      <span>Seg a sex 07:00–18:00 · Sáb 07:00–12:00</span>
+      <span class="endereco">Av. Padre José Marciano, 302 – Centro, Alvinópolis-MG</span>
+      <strong>WhatsApp (31) 97114-9666</strong>
+    </div>
+  </div>
   <header class="topo-site">
     <div class="container">
-      <a class="marca" href="/" aria-label="Loja Dois Irmãos – Casa & Obra, página inicial">
-        <img src="/img/logo-horizontal.jpg" alt="Logo Dois Irmãos – Casa & Obra">
-      </a>
+      <a class="marca" href="/"><img src="/img/logo-horizontal.jpg" alt="Dois Irmãos – Casa &amp; Obra, página inicial" width="140" height="60"></a>
       <nav class="menu-site" aria-label="Menu principal">
-        <a href="#catalogo">Catálogo</a>
-        <a href="#sobre">A loja</a>
-        <a href="#contato">Contato</a>
-        <a class="btn btn-primario btn-pequeno" href="/login.html">Área do funcionário</a>
+        <a href="/" aria-current="page">Início</a>
+        <a href="/catalogo">Catálogo</a>
+        <a href="/#sobre">A loja</a>
+        <a href="/#contato">Contato</a>
       </nav>
+      <form class="busca-topo" action="/catalogo" method="get" role="search">
+        <label class="sr-only" for="busca-topo">Buscar produto</label>
+        <input id="busca-topo" name="q" type="search" placeholder="Busque por nome, código ou medida (ex.: 25mm)">
+        <button type="submit" aria-label="Buscar"><svg class="icone" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button>
+      </form>
+      <a class="botao-lista" href="/lista"><svg class="icone" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg><span class="texto">Lista de orçamento</span> <span class="contador oculto" data-contador-lista></span></a>
     </div>
   </header>
 
-  <main>
+  <main id="conteudo">
     <!-- Banner principal -->
     <section class="banner">
       <div class="container">
-        <h1>Tudo para sua <em>casa</em> e sua <em>obra</em> em Alvinópolis</h1>
-        <p>Materiais de construção, acabamentos, ferramentas e componentes elétricos e hidráulicos.
-          Consulte as especificações de cada produto antes de pedir seu orçamento.</p>
-        <form class="busca-banner" id="form-busca" role="search">
-          <label for="busca" class="sr-only">Buscar produto</label>
-          <input type="search" id="busca" placeholder="Busque por nome, código ou medida (ex.: 25mm, CP II)">
-          <button class="btn btn-primario" type="submit">Buscar</button>
-        </form>
+        <div class="chamada">
+          <span class="sobretitulo">Materiais de construção em Alvinópolis</span>
+          <h1>Tudo para sua casa e sua obra, com o <em>produto certo</em>.</h1>
+          <p>Consulte as especificações técnicas de cada item, veja o que está disponível agora e peça seu orçamento pelo código do produto, sem confusão no balcão.</p>
+          <div class="acoes-banner">
+            <a class="btn btn-primario btn-grande" href="/catalogo">Ver catálogo</a>
+            <a class="btn btn-contorno-claro btn-grande" data-whatsapp href="#" target="_blank" rel="noopener">Pedir orçamento</a>
+          </div>
+        </div>
+        <!-- Troque pelo <img> da fachada: <div class="foto-banner"><img src="/img/fachada.jpg" alt="Fachada da loja"></div> -->
+        <div class="foto-banner sem-foto">
+          <svg class="icone" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#C9A227" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/></svg>
+          <span>Foto da fachada da loja</span>
+        </div>
       </div>
     </section>
 
-    <div class="container">
-      <div class="destaques">
-        <div class="destaque">
-          <strong>Especificações técnicas</strong>
-          <span>Bitola, tipo, peso e indicação de uso para evitar confusão entre produtos parecidos.</span>
+    <!-- Diferenciais -->
+    <section class="diferenciais" aria-label="Por que comprar na Dois Irmãos">
+      <div class="container">
+        <div class="diferencial">
+          <span class="icone-caixa"><svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v16H8z"/><path d="M11 9h2M11 13h2M11 17h2"/></svg></span>
+          <div><strong>Especificação técnica</strong><span>Bitola, tipo e peso de cada item, para não errar a medida.</span></div>
         </div>
-        <div class="destaque">
-          <strong>Disponibilidade atualizada</strong>
-          <span>O catálogo mostra na hora quando um item está disponível ou esgotado.</span>
+        <div class="diferencial">
+          <span class="icone-caixa"><svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg></span>
+          <div><strong>Disponibilidade na hora</strong><span>O catálogo mostra se o produto está em estoque agora.</span></div>
         </div>
-        <div class="destaque">
-          <strong>Orçamento pelo código</strong>
-          <span>Informe o código do produto no WhatsApp e receba o orçamento certo.</span>
+        <div class="diferencial">
+          <span class="icone-caixa"><svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h10M4 17h7"/></svg></span>
+          <div><strong>Orçamento pelo código</strong><span>Mande o código no WhatsApp e receba o preço certo.</span></div>
+        </div>
+        <div class="diferencial">
+          <span class="icone-caixa"><svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
+          <div><strong>No centro da cidade</strong><span>Retire no balcão, na Av. Padre José Marciano.</span></div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Catálogo -->
-    <section class="secao" id="catalogo">
+    <!-- Categorias -->
+    <section class="secao">
       <div class="container">
         <div class="secao-titulo">
-          <h2>Catálogo de produtos</h2>
-          <span class="ajuda" id="contador" aria-live="polite"></span>
+          <h2>Navegue por categoria</h2>
+          <a class="link-seta" href="/catalogo">Ver todo o catálogo →</a>
         </div>
-        <div class="categorias" id="categorias" aria-label="Filtrar por categoria"></div>
-        <div class="grade-produtos" id="grade"></div>
-        <p class="vazio oculto" id="vazio">Nenhum produto encontrado. Tente outra busca.</p>
+        <div class="grade-categorias" id="categorias"></div>
+      </div>
+    </section>
+
+    <!-- Destaques -->
+    <section class="secao" aria-labelledby="titulo-destaques">
+      <div class="container">
+        <div class="secao-titulo">
+          <div>
+            <h2 id="titulo-destaques">Mais procurados</h2>
+            <p>Preços e disponibilidade atualizados pelo estoque da loja.</p>
+          </div>
+        </div>
+        <div class="grade-produtos" id="destaques"></div>
+      </div>
+    </section>
+
+    <!-- Como pedir orçamento -->
+    <section class="secao secao-cinza">
+      <div class="container">
+        <div class="secao-titulo">
+          <div>
+            <h2>Como pedir seu orçamento</h2>
+            <p>Três passos e o atendente já sabe exatamente o que separar.</p>
+          </div>
+        </div>
+        <div class="grade-passos">
+          <div class="passo"><span class="numero">1</span><strong>Encontre o produto</strong><span>Busque pela medida ou pelo tipo e confira a tabela de especificações.</span></div>
+          <div class="passo"><span class="numero">2</span><strong>Envie o código</strong><span>Toque em "Pedir orçamento": a mensagem já vai com o código e o nome do item.</span></div>
+          <div class="passo"><span class="numero">3</span><strong>Receba e retire</strong><span>O orçamento chega com validade e preço garantido até a data. É só retirar na loja.</span></div>
+        </div>
       </div>
     </section>
 
     <!-- Sobre a loja -->
-    <section class="secao secao-cinza" id="sobre">
-      <div class="container sobre">
-        <div>
-          <h2>Sobre a Dois Irmãos – Casa &amp; Obra</h2>
-          <p>Localizada no centro de Alvinópolis-MG, a Loja Dois Irmãos atua no comércio de materiais de construção,
-            acabamentos, ferramentas e componentes elétricos e hidráulicos, atendendo clientes da região em
-            construções, reformas e manutenções.</p>
-          <p>Com o nosso catálogo digital você confere a descrição completa de cada item e chega ao balcão
-            sabendo exatamente o que precisa.</p>
+    <section class="secao" id="sobre">
+      <div class="container visite">
+        <div class="dados-loja">
+          <span class="sobretitulo">Sobre a loja</span>
+          <h2>Dois Irmãos – Casa &amp; Obra</h2>
+          <p>Localizada no centro de Alvinópolis-MG, a Dois Irmãos atende a região com materiais de construção, acabamentos, ferramentas e componentes elétricos e hidráulicos para construções, reformas e manutenções.</p>
+          <p>O catálogo do site mostra a descrição técnica de cada item, para você chegar ao balcão sabendo exatamente o que precisa.</p>
         </div>
-        <div class="cartao">
-          <h3>O que você encontra aqui</h3>
-          <ul class="lista-check">
-            <li>Materiais básicos: cimento, argamassa e blocos</li>
-            <li>Hidráulica: tubos, conexões, registros e caixas d'água</li>
-            <li>Elétrica: cabos, disjuntores e tomadas</li>
-            <li>Tintas, massas e acabamentos</li>
-            <li>Ferramentas para obra e manutenção</li>
-          </ul>
+        <!-- Troque pela foto do interior: <div class="foto-banner"><img src="/img/interior.jpg" alt="Balcão da loja"></div> -->
+        <div class="foto-banner sem-foto claro"><span>Foto do balcão ou do interior da loja</span></div>
+      </div>
+    </section>
+
+    <!-- Contato -->
+    <section class="secao secao-cinza" id="contato">
+      <div class="container visite">
+        <iframe class="mapa" title="Mapa com a localização da loja" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+          src="https://www.google.com/maps?q=Avenida+Padre+Jos%C3%A9+Marciano,+302,+Alvin%C3%B3polis+-+MG&amp;output=embed"></iframe>
+        <div class="dados-loja">
+          <h2>Visite a loja</h2>
+          <div class="dado">
+            <svg class="icone" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            <p><strong>Endereço</strong><br><span data-loja="endereco"></span><br><span data-loja="cidade"></span></p>
+          </div>
+          <div class="dado">
+            <svg class="icone" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            <div><strong>Horário</strong><div data-loja="horarios"></div></div>
+          </div>
+          <div class="dado">
+            <svg class="icone" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 0 1-13.5 7.8L3 21l1.2-4.5A9 9 0 1 1 21 12z"/></svg>
+            <p><strong>Telefone e WhatsApp</strong><br><span data-loja="telefone"></span></p>
+          </div>
+          <a class="btn btn-escuro btn-grande" data-whatsapp href="#" target="_blank" rel="noopener">Chamar no WhatsApp</a>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- Rodapé / contato -->
-  <footer class="rodape-site" id="contato">
-    <div class="container">
-      <div class="rodape-grade">
-        <div>
-          <h3>Endereço</h3>
-          <p data-loja="endereco"></p>
-          <p data-loja="cidade"></p>
-        </div>
-        <div>
-          <h3>Contato</h3>
-          <p>Telefone e WhatsApp: <span data-loja="telefone"></span></p>
-          <p><a data-loja="whatsapp-link" href="#" target="_blank" rel="noopener">Chamar no WhatsApp</a></p>
-        </div>
-        <div>
-          <h3>Horário de funcionamento</h3>
-          <div data-loja="horarios"></div>
-        </div>
+  <footer class="rodape-site">
+    <div class="container rodape-grade">
+      <div>
+        <img src="/img/logo-horizontal.jpg" alt="Dois Irmãos – Casa &amp; Obra" width="200" height="86">
+        <p>Materiais de construção, acabamentos, ferramentas, elétrica e hidráulica em Alvinópolis-MG.</p>
       </div>
-      <p class="creditos">© <span data-loja="ano"></span> Loja Dois Irmãos – Casa &amp; Obra. Projeto acadêmico de Sistemas Web I – UFOP.</p>
+      <div>
+        <h3>Site</h3>
+        <a href="/catalogo">Catálogo de produtos</a>
+        <a href="/lista">Minha lista de orçamento</a>
+        <a href="/#sobre">Sobre a loja</a>
+      </div>
+      <div>
+        <h3>Atendimento</h3>
+        <p>Avenida Padre José Marciano, 302 – Centro, Alvinópolis-MG</p>
+        <p>Seg a sex 07:00–18:00 · Sáb 07:00–12:00</p>
+        <p><a data-whatsapp href="#" target="_blank" rel="noopener">(31) 97114-9666 (WhatsApp)</a></p>
+      </div>
+      <div>
+        <h3>Funcionários</h3>
+        <a href="/login.html">Acessar o painel</a>
+      </div>
     </div>
+    <div class="container creditos">© <span data-loja="ano"></span> Loja Dois Irmãos – Casa &amp; Obra · Projeto acadêmico de Sistemas Web I – UFOP</div>
   </footer>
-
-  <!-- Detalhes do produto -->
-  <dialog id="janela-produto" aria-labelledby="titulo-produto">
-    <div class="dialog-topo">
-      <h2 id="titulo-produto">Produto</h2>
-      <button class="fechar" type="button" data-fechar aria-label="Fechar">&times;</button>
-    </div>
-    <div class="dialog-corpo" id="corpo-produto"></div>
-  </dialog>
+  <a class="whatsapp-flutuante" data-whatsapp href="#" target="_blank" rel="noopener" aria-label="Chamar a loja no WhatsApp"><svg class="icone" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 0 1-13.5 7.8L3 21l1.2-4.5A9 9 0 1 1 21 12z"/></svg></a>
 
   <script src="/js/comum.js"></script>
-  <script src="/js/catalogo.js"></script>
+  <script src="/js/site.js"></script>
+  <script src="/js/inicio.js"></script>
 </body>
 </html>

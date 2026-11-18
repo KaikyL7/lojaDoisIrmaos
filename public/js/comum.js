@@ -27,15 +27,22 @@ function reais(centavos) {
   return formatoReal.format((Number(centavos) || 0) / 100);
 }
 
-/** "2026-11-12 21:37:11" → "12/11/2026 21:37" */
-function dataHora(texto) {
-  if (!texto) return '';
-  const [d, h = ''] = String(texto).split(' ');
-  const [a, m, dia] = d.split('-');
-  return `${dia}/${m}/${a}${h ? ' ' + h.slice(0, 5) : ''}`;
+// Datas sempre no horário de Brasília, qualquer que seja o fuso do computador
+const formatoDataHora = new Intl.DateTimeFormat('pt-BR', {
+  timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit',
+});
+
+/** Data e hora vindas do banco ("2026-11-12T21:37:11.000Z") → "12/11/2026 18:37" */
+function dataHora(valor) {
+  if (!valor) return '';
+  const d = new Date(valor);
+  return Number.isNaN(d.getTime()) ? String(valor) : formatoDataHora.format(d).replace(',', '');
 }
-function data(texto) {
-  return dataHora(String(texto || '').split(' ')[0]);
+
+/** Data sem hora ("2026-11-19") → "19/11/2026" */
+function data(valor) {
+  const [a, m, dia] = String(valor || '').slice(0, 10).split('-');
+  return a && m && dia ? `${dia}/${m}/${a}` : '';
 }
 
 /** Chamada à API do servidor. Lança erro com a mensagem vinda do back-end. */

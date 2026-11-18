@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catálogo de produtos | Dois Irmãos – Casa & Obra</title>
+  <meta name="description" content="Catálogo de materiais de construção da Dois Irmãos em Alvinópolis-MG, com especificações técnicas, preços e disponibilidade.">
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap">
+  <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+  <a class="sr-only" href="#conteudo">Pular para o conteúdo</a>
+  <div class="faixa-topo">
+    <div class="container">
+      <span>Seg a sex 07:00–18:00 · Sáb 07:00–12:00</span>
+      <span class="endereco">Av. Padre José Marciano, 302 – Centro, Alvinópolis-MG</span>
+      <strong>WhatsApp (31) 97114-9666</strong>
+    </div>
+  </div>
+  <header class="topo-site">
+    <div class="container">
+      <a class="marca" href="/"><img src="/img/logo-horizontal.jpg" alt="Dois Irmãos – Casa &amp; Obra, página inicial" width="140" height="60"></a>
+      <nav class="menu-site" aria-label="Menu principal">
+        <a href="/">Início</a>
+        <a href="/catalogo" aria-current="page">Catálogo</a>
+        <a href="/#sobre">A loja</a>
+        <a href="/#contato">Contato</a>
+      </nav>
+      <form class="busca-topo" action="/catalogo" method="get" role="search">
+        <label class="sr-only" for="busca-topo">Buscar produto</label>
+        <input id="busca-topo" name="q" type="search" placeholder="Busque por nome, código ou medida (ex.: 25mm)">
+        <button type="submit" aria-label="Buscar"><svg class="icone" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button>
+      </form>
+      <a class="botao-lista" href="/lista"><svg class="icone" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg><span class="texto">Lista de orçamento</span> <span class="contador oculto" data-contador-lista></span></a>
+    </div>
+  </header>
+
+  <main id="conteudo">
+    <div class="cabecalho-catalogo">
+      <div class="container">
+        <nav class="trilha" aria-label="Você está em">
+          <a href="/">Início</a><span aria-hidden="true">/</span><span aria-current="page" id="trilha-atual">Catálogo</span>
+        </nav>
+        <h1 id="titulo-catalogo">Catálogo de produtos</h1>
+      </div>
+    </div>
+
+    <div class="container catalogo">
+      <aside class="filtros-catalogo" aria-label="Filtros">
+        <div>
+          <h2>Categorias</h2>
+          <ul class="lista-categorias" id="categorias"></ul>
+        </div>
+        <div>
+          <h2>Disponibilidade</h2>
+          <label class="opcao-check"><input type="checkbox" id="so-disponiveis"> Só produtos disponíveis</label>
+        </div>
+      </aside>
+
+      <section class="resultado-catalogo" aria-labelledby="titulo-catalogo">
+        <form class="barra-catalogo" id="barra" role="search">
+          <div class="busca">
+            <label class="sr-only" for="busca">Buscar no catálogo</label>
+            <input type="search" id="busca" placeholder="Nome, código, medida ou especificação">
+          </div>
+          <label class="sr-only" for="ordem">Ordenar por</label>
+          <select id="ordem">
+            <option value="">Ordenar: categoria</option>
+            <option value="nome">Nome (A–Z)</option>
+            <option value="preco_asc">Menor preço</option>
+            <option value="preco_desc">Maior preço</option>
+          </select>
+        </form>
+        <p class="ajuda" id="contador" aria-live="polite"></p>
+        <div class="grade-produtos" id="grade"></div>
+        <p class="vazio oculto" id="vazio">Nenhum produto encontrado. Tente buscar pela medida (ex.: 25mm) ou pelo código.</p>
+      </section>
+    </div>
+  </main>
+
+  <footer class="rodape-site">
+    <div class="container rodape-grade">
+      <div>
+        <img src="/img/logo-horizontal.jpg" alt="Dois Irmãos – Casa &amp; Obra" width="200" height="86">
+        <p>Materiais de construção, acabamentos, ferramentas, elétrica e hidráulica em Alvinópolis-MG.</p>
+      </div>
+      <div>
+        <h3>Site</h3>
+        <a href="/catalogo">Catálogo de produtos</a>
+        <a href="/lista">Minha lista de orçamento</a>
+        <a href="/#sobre">Sobre a loja</a>
+      </div>
+      <div>
+        <h3>Atendimento</h3>
+        <p>Avenida Padre José Marciano, 302 – Centro, Alvinópolis-MG</p>
+        <p>Seg a sex 07:00–18:00 · Sáb 07:00–12:00</p>
+        <p><a data-whatsapp href="#" target="_blank" rel="noopener">(31) 97114-9666 (WhatsApp)</a></p>
+      </div>
+      <div>
+        <h3>Funcionários</h3>
+        <a href="/login.html">Acessar o painel</a>
+      </div>
+    </div>
+    <div class="container creditos">© <span data-loja="ano"></span> Loja Dois Irmãos – Casa &amp; Obra · Projeto acadêmico de Sistemas Web I – UFOP</div>
+  </footer>
+  <a class="whatsapp-flutuante" data-whatsapp href="#" target="_blank" rel="noopener" aria-label="Chamar a loja no WhatsApp"><svg class="icone" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 0 1-13.5 7.8L3 21l1.2-4.5A9 9 0 1 1 21 12z"/></svg></a>
+
+  <script src="/js/comum.js"></script>
+  <script src="/js/site.js"></script>
+  <script src="/js/catalogo.js"></script>
+</body>
+</html>
