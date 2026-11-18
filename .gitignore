@@ -1,12 +1,11 @@
-# Banco de dados gerado ao iniciar o servidor
-data/*.db
-data/*.db-*
+# Configurações locais (contêm a senha do banco)
+.env
+
+# Pacotes instalados pelo npm install
+node_modules/
 
 # Imagens enviadas pelo painel
-public/uploads/*
-!public/uploads/.gitkeep
 
-node_modules/
 .DS_Store
 Thumbs.db
 .vscode/
