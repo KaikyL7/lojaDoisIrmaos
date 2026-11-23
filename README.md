@@ -47,14 +47,6 @@ A solução é um **banco de dados com os itens do estoque** e um **catálogo co
 **Requisitos:** [Node.js](https://nodejs.org/) 22.9 ou mais recente (recomendado: versão LTS) e um banco
 PostgreSQL. O mais simples é o [Neon](https://neon.tech), gratuito e na nuvem.
 
-### Jeito rápido (Windows)
-
-Com o Node.js instalado, dê **dois cliques no arquivo `iniciar.bat`**. Ele instala as dependências, pede o
-endereço do banco do Neon na primeira vez, cria as tabelas e abre o site no navegador. Para desligar, feche
-a janela preta.
-
-### Passo a passo manual
-
 ### 1. Baixar o projeto e instalar as dependências
 
 ```bash
@@ -164,14 +156,12 @@ lojaDoisIrmaos/
 ├── server.js               # Servidor Express: páginas, fotos e API
 ├── package.json
 ├── .env.example            # Modelo do arquivo de configuração (.env)
-├── iniciar.bat             # Inicia tudo com dois cliques (Windows)
 ├── database/
 │   ├── schema.sql          # Tabelas, restrições, índices e gatilhos
 │   └── seed.sql            # Dados de exemplo
 ├── src/
 │   ├── db.js               # Conexão com o PostgreSQL e transações
 │   ├── setup-banco.js      # npm run setup / reset-db
-│   ├── configurar.js       # cria o .env (usado pelo iniciar.bat)
 │   ├── autenticacao.js     # Sessões e permissões por perfil
 │   ├── seguranca.js        # Hash de senha e limite de tentativas
 │   ├── estoque.js          # Regra central de movimentação do estoque
