@@ -15,8 +15,6 @@ const MENU = [
   { href: 'orcamentos.html', texto: 'Orçamentos' },
   { grupo: 'Administração', gerente: true },
   { href: 'funcionarios.html', texto: 'Funcionários', gerente: true },
-  { separador: true },
-  { href: '/', texto: 'Ver catálogo do site ↗', externo: true },
 ];
 
 let USUARIO = null;

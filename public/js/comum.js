@@ -117,17 +117,49 @@ function tabelaEspecificacoes(texto) {
  * Tempo real: escuta os avisos do servidor (Server-Sent Events)
  * e chama "aoMudar" sempre que o estoque for alterado.
  */
-function ouvirTempoReal(eventos, aoMudar) {
-  if (!window.EventSource) return;
-  const fonte = new EventSource('/api/eventos');
-  let espera;
-  for (const evento of eventos) {
+//
+// Cada aba usa UMA única conexão (o navegador só permite 6 conexões abertas por site;
+// com uma conexão por ouvinte, poucas abas abertas já travavam o site inteiro).
+// Abas em segundo plano fecham a conexão e, ao voltar, reconectam e recarregam os dados.
+const tempoReal = { fonte: null, ouvintes: [] };
+
+function ligarOuvinte(fonte, ouvinte) {
+  for (const evento of ouvinte.eventos) {
     fonte.addEventListener(evento, (e) => {
-      clearTimeout(espera);
-      espera = setTimeout(() => aoMudar(evento, JSON.parse(e.data || '{}')), 150);
+      clearTimeout(ouvinte.espera);
+      ouvinte.espera = setTimeout(() => ouvinte.aoMudar(evento, JSON.parse(e.data || '{}')), 150);
     });
   }
-  return fonte;
+}
+
+function conectarTempoReal() {
+  if (tempoReal.fonte || document.hidden) return;
+  tempoReal.fonte = new EventSource('/api/eventos');
+  tempoReal.ouvintes.forEach((o) => ligarOuvinte(tempoReal.fonte, o));
+}
+
+function desconectarTempoReal() {
+  if (!tempoReal.fonte) return;
+  tempoReal.fonte.close();
+  tempoReal.fonte = null;
+}
+
+if (window.EventSource) {
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) return desconectarTempoReal();
+    conectarTempoReal();
+    // Enquanto a aba estava escondida, algo pode ter mudado: recarrega os dados
+    tempoReal.ouvintes.forEach((o) => o.aoMudar(o.eventos[0], {}));
+  });
+  window.addEventListener('pagehide', desconectarTempoReal);
+}
+
+function ouvirTempoReal(eventos, aoMudar) {
+  if (!window.EventSource) return;
+  const ouvinte = { eventos, aoMudar, espera: null };
+  tempoReal.ouvintes.push(ouvinte);
+  if (tempoReal.fonte) ligarOuvinte(tempoReal.fonte, ouvinte);
+  else conectarTempoReal();
 }
 
 /** Preenche elementos marcados com data-loja="campo" com os dados da loja. */

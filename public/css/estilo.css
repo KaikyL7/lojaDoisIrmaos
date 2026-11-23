@@ -374,7 +374,7 @@ dialog::backdrop { background: rgba(31, 35, 40, 0.55); }
 }
 .menu-site a { color: #fff; text-decoration: none; }
 .menu-site a:hover,
-.menu-site a[aria-current="page"] { color: var(--ouro); }
+.menu-site a[aria-current] { color: var(--ouro); }
 
 .busca-topo {
   flex: 1 1 260px;
@@ -419,6 +419,23 @@ dialog::backdrop { background: rgba(31, 35, 40, 0.55); }
   white-space: nowrap;
 }
 .botao-lista:hover { background: rgba(201, 162, 39, 0.12); color: var(--ouro); }
+
+/* Acesso ao painel dos funcionários (discreto, ao lado da lista de orçamento) */
+.botao-funcionario {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 44px;
+  padding: 0 0.9rem;
+  border: 1px solid #444;
+  border-radius: 8px;
+  color: #cfcbc4;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+.botao-funcionario:hover { border-color: var(--ouro); color: var(--ouro); }
 .botao-lista .contador {
   background: var(--ouro);
   color: #111;
@@ -636,6 +653,40 @@ dialog::backdrop { background: rgba(31, 35, 40, 0.55); }
 .rodape-site a { color: #d6d3cd; text-decoration: none; }
 .rodape-site a:hover { color: var(--ouro); }
 .rodape-site p { margin: 0; }
+/* Instagram ao lado da marca */
+.link-instagram {
+  display: inline-grid;
+  place-items: center;
+  align-self: flex-start;
+  color: var(--ouro);
+  transition: color 0.15s, transform 0.15s;
+}
+.link-instagram svg { width: 32px; height: 32px; }
+.rodape-site a.link-instagram:hover { color: #e3c25a; transform: scale(1.1); }
+
+/* Fale conosco (WhatsApp) */
+.rodape-site a.fale-conosco {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  align-self: flex-start;
+  margin-top: 0.3rem;
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  background: var(--ouro);
+  color: #111;
+  font-weight: 700;
+}
+.rodape-site a.fale-conosco:hover { background: #d9b438; color: #111; }
+
+/* Formas de pagamento */
+.formas-pagamento { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.7rem; }
+.formas-pagamento li { display: flex; align-items: center; gap: 0.6rem; color: #d6d3cd; }
+.formas-pagamento svg { color: var(--ouro); flex: none; }
+
+@media (min-width: 861px) {
+  .rodape-grade { grid-template-columns: 1.2fr 1fr 1fr; }
+}
 .creditos { border-top: 1px solid #222; padding: 1.25rem 0 1.75rem; font-size: 0.82rem; color: #8c8a86; }
 
 /* Botão flutuante do WhatsApp */
@@ -851,6 +902,8 @@ dialog::backdrop { background: rgba(31, 35, 40, 0.55); }
   .card-produto .resumo { display: none; }
   .preco { font-size: 1.05rem; }
   .botao-lista span.texto { display: none; }
+  .botao-funcionario { padding: 0 0.75rem; }
+  .botao-funcionario span.texto { display: none; }
 }
 
 .foto-banner.sem-foto.claro { background: var(--fundo-2); border-color: #cfcbc4; color: var(--texto-suave); }
