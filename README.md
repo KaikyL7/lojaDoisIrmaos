@@ -1,53 +1,67 @@
 # Loja Dois Irmãos – Casa & Obra
 
-Sistema web da **Loja Dois Irmãos – Casa & Obra** (Alvinópolis-MG), loja de materiais de construção, acabamentos,
-ferramentas e componentes elétricos e hidráulicos.
+Site e sistema de estoque que desenvolvemos para a Loja Dois Irmãos – Casa & Obra, uma loja de materiais de
+construção de Alvinópolis-MG que trabalha com acabamentos, ferramentas, material elétrico e hidráulico.
 
-O sistema tem duas partes:
+**Site no ar:** https://lojadoisirmaos.onrender.com
 
-- **Site público:** página inicial, catálogo com busca e filtros, e uma página para cada produto
-  (`/produto/HI-001`), com especificações técnicas, disponibilidade em tempo real, quadro **"Não confunda"**
-  comparando produtos parecidos e pedido de orçamento pelo WhatsApp.
-- **Painel dos funcionários:** controle de estoque em tempo real (entradas, saídas, devoluções e conferência),
-  histórico de movimentações e emissão de orçamentos que bloqueia itens sem estoque.
+> Como está no plano gratuito do Render, o site "dorme" depois de um tempo sem visitas. Se a primeira
+> abertura demorar uns 30 a 50 segundos, é só esperar que ele acorda.
 
-> Projeto acadêmico da disciplina **Sistemas Web I** – UFOP / ICEA – Departamento de Computação e Sistemas.
-> Docente: Fernando Bernardes de Oliveira.
-> Discentes: Kaiky Linhares (24.1.8154) e Letícia Ferreira Silva (24.2.8067).
+Trabalho da disciplina Sistemas Web I – UFOP / ICEA, Departamento de Computação e Sistemas.
+Professor: Fernando Bernardes de Oliveira.
+Alunos: Kaiky Linhares (24.1.8154) e Letícia Ferreira Silva (24.2.8067).
 
 ---
 
-## O problema
+## Por que esse projeto
 
-A loja tinha dificuldade para:
+Na loja, dois problemas se repetiam no dia a dia:
 
-1. **Acompanhar o estoque:** erros nos registros de vendas, devoluções e entradas impediam saber a quantidade real
-   disponível, gerando divergências entre o estoque físico e o sistema e orçamentos de itens esgotados.
-2. **Identificar o produto pedido pelo cliente:** materiais com nomes parecidos e especificações diferentes
-   (ex.: tubo de 25 mm × 32 mm, cimento CP II × CP V) geravam erros no atendimento.
+1. **O estoque do sistema não batia com o da prateleira.** Vendas, devoluções e entradas eram registradas de
+   qualquer jeito (ou nem eram), então ninguém sabia ao certo quanto tinha de cada item. Isso acabava em
+   orçamento de produto que já tinha acabado.
+2. **Produtos parecidos geravam confusão no balcão.** Tubo de 25 mm e de 32 mm, cimento CP II e CP V... o cliente
+   pedia um, levava o outro, e voltava para trocar.
 
-A solução é um **banco de dados com os itens do estoque** e um **catálogo com a descrição técnica de cada item**.
+A ideia foi resolver as duas coisas juntas: um banco de dados com todo o estoque, atualizado a cada movimentação,
+e um catálogo em que cada produto tem a sua descrição técnica, com um aviso dos itens que costumam ser confundidos.
 
----
+## O que o sistema faz
+
+O sistema tem duas partes.
+
+**Site para os clientes**
+- página inicial, catálogo com busca e filtros, e uma página para cada produto (por exemplo `/produto/HI-001`);
+- especificações técnicas e se o produto está disponível, atualizado na hora;
+- quadro "Não confunda", que compara o produto com os parecidos;
+- lista de orçamento: o cliente junta os itens que quer e manda tudo pelo WhatsApp da loja de uma vez.
+
+**Painel para os funcionários** (botão "Área do funcionário", no topo do site)
+- entradas, saídas, devoluções e conferência do estoque;
+- histórico de todas as movimentações;
+- emissão de orçamentos, que não deixa incluir item sem estoque;
+- cadastro de produtos e de funcionários (só o gerente).
 
 ## Tecnologias
 
-| Camada | Tecnologia |
+| Parte | O que usamos |
 |---|---|
-| Páginas | **HTML5 e CSS3** (sem framework), fontes Montserrat e Inter |
-| Interação | **JavaScript** puro (`fetch`, Server-Sent Events) |
-| Servidor | **Node.js + Express** |
-| Banco de dados | **PostgreSQL** (pacote `pg`), hospedado no **Neon** |
-| Tempo real | Gatilhos do PostgreSQL + `LISTEN/NOTIFY` + Server-Sent Events |
+| Páginas | HTML5 e CSS3, sem framework (fontes Montserrat e Inter) |
+| Interação | JavaScript puro (`fetch` e Server-Sent Events) |
+| Servidor | Node.js com Express |
+| Banco de dados | PostgreSQL, hospedado no Neon |
+| Tempo real | gatilhos do PostgreSQL + `LISTEN/NOTIFY` + Server-Sent Events |
+| Hospedagem | Render (site) e Neon (banco) |
 
 ---
 
-## Como executar
+## Rodando no seu computador
 
-**Requisitos:** [Node.js](https://nodejs.org/) 22.9 ou mais recente (recomendado: versão LTS) e um banco
-PostgreSQL. O mais simples é o [Neon](https://neon.tech), gratuito e na nuvem.
+Você vai precisar do [Node.js](https://nodejs.org/) 22.9 ou mais novo e de um banco PostgreSQL. O jeito mais
+fácil de conseguir o banco é criar um no [Neon](https://neon.tech), que é gratuito e não precisa instalar nada.
 
-### 1. Baixar o projeto e instalar as dependências
+**1. Baixe o projeto e instale as dependências**
 
 ```bash
 git clone https://github.com/KaikyL7/lojaDoisIrmaos.git
@@ -55,138 +69,155 @@ cd lojaDoisIrmaos
 npm install
 ```
 
-### 2. Criar o banco no Neon
+**2. Crie o banco no Neon**
 
-1. Crie uma conta em [neon.tech](https://neon.tech) (dá para entrar com o GitHub).
-2. Crie um projeto (região sugerida: AWS São Paulo).
-3. Clique em **Connect** e copie o endereço que começa com `postgresql://`.
+Crie uma conta no Neon e um projeto (sugerimos a região AWS São Paulo). Na página do projeto, clique em
+**Connect** e copie o endereço que começa com `postgresql://`. Antes de copiar, clique no olho para mostrar a
+senha.
 
-### 3. Configurar o endereço do banco
+**3. Configure o endereço do banco**
 
-Copie o arquivo `.env.example` com o nome `.env` e cole o endereço do banco na linha `DATABASE_URL`:
+Faça uma cópia do arquivo `.env.example` com o nome `.env` e cole o endereço na linha `DATABASE_URL`:
 
 ```
 DATABASE_URL=postgresql://usuario:senha@ep-xxxx.sa-east-1.aws.neon.tech/neondb?sslmode=require
 ```
 
-> O `.env` contém a senha do banco e **não vai para o GitHub** (está no `.gitignore`).
+O `.env` guarda a senha do banco, por isso está no `.gitignore` e não vai para o GitHub.
 
-### 4. Criar as tabelas e iniciar
+**4. Crie as tabelas e inicie o site**
 
 ```bash
 npm run setup    # cria as tabelas e coloca os dados de exemplo
 npm start        # inicia o site
 ```
 
-| Página | Endereço |
-|---|---|
-| Site público | http://localhost:3000 |
-| Área do funcionário | http://localhost:3000/login.html |
+Depois é só abrir http://localhost:3000. O painel fica em http://localhost:3000/login.html.
 
-### Usuários de teste
+### Usuários de exemplo
+
+O `npm run setup` cria dois usuários para teste:
 
 | Perfil | Usuário | Senha |
 |---|---|---|
 | Gerente | `gerente` | `gerente123` |
 | Atendente | `atendente` | `atendente123` |
 
-> Em uso real, troque essas senhas na tela **Funcionários**.
+Essas senhas servem só para quem está rodando o projeto no próprio computador. No site publicado elas já foram
+trocadas. Se precisar de acesso ao painel online, é só falar com a gente.
 
-### Comandos
+### Outros comandos
 
-| Comando | O que faz |
+| Comando | Para que serve |
 |---|---|
-| `npm start` | Inicia o servidor na porta 3000 (ou na variável `PORT`) |
-| `npm run setup` | Cria as tabelas que faltam e coloca os dados de exemplo se o banco estiver vazio |
-| `npm run reset-db` | **Apaga tudo** e recria o banco com os dados de exemplo |
+| `npm start` | inicia o servidor na porta 3000 (ou na porta da variável `PORT`) |
+| `npm run setup` | cria as tabelas que faltam e, se o banco estiver vazio, coloca os dados de exemplo |
+| `npm run reset-db` | apaga tudo e recria o banco com os dados de exemplo (cuidado!) |
 
-Também dá para criar as tabelas sem o Node: rode `database/schema.sql` e depois `database/seed.sql` no
-**SQL Editor** do Neon ou no pgAdmin.
+Se preferir criar as tabelas sem o Node, dá para rodar `database/schema.sql` e depois `database/seed.sql` direto
+no SQL Editor do Neon ou no pgAdmin.
 
 ---
 
-## Funcionalidades × requisitos
+## Como o site foi publicado
+
+O código fica aqui no GitHub, o banco no Neon e o site no Render, todos no plano gratuito.
+
+No Render, criamos um *Web Service* apontando para este repositório, com:
+
+- comando de build: `npm install`
+- comando de início: `npm start`
+- variáveis de ambiente: `DATABASE_URL` (o mesmo endereço do Neon) e `NODE_ENV=production`
+
+O `NODE_ENV=production` faz o cookie de login só circular por HTTPS. A porta quem define é o próprio Render,
+e o servidor já lê ela da variável `PORT`. Quando mudamos alguma coisa no código, mandamos para o GitHub e
+pedimos um novo deploy no painel do Render (*Manual Deploy → Deploy latest commit*).
+
+---
+
+## Requisitos do trabalho e onde cada um aparece
 
 ### Requisitos funcionais
 
-| Requisito | Onde está no sistema |
+| Requisito | Onde está |
 |---|---|
-| Controle da movimentação do estoque | **Entradas e saídas**, **Devoluções** e **Conferência de estoque** |
-| Consultar a quantidade disponível em tempo real | **Produtos e estoque** e catálogo (atualizam sozinhos a cada movimentação) |
-| Estoque com nome, preço e imagem de cada produto | Cadastro de produtos (foto enviada ou ilustração) e catálogo público |
-| Geração e emissão de orçamentos | **Novo orçamento** e **Orçamentos** (impressão/PDF e envio por WhatsApp) |
-| Autenticação e acesso de funcionários | Login com credenciais individuais e perfis **Atendente** e **Gerente** |
+| Controle da movimentação do estoque | telas de Entradas e saídas, Devoluções e Conferência de estoque |
+| Consultar a quantidade disponível em tempo real | tela Produtos e estoque e catálogo do site, que se atualizam sozinhos |
+| Estoque com nome, preço e imagem de cada produto | cadastro de produtos (com foto enviada ou ilustração) e catálogo |
+| Geração e emissão de orçamentos | telas Novo orçamento e Orçamentos (dá para imprimir, salvar em PDF e mandar por WhatsApp) |
+| Autenticação e acesso de funcionários | login individual, com perfis de Atendente e Gerente |
 
 ### Regras de negócio
 
-| Regra | Como foi implementada |
+| Regra | Como fizemos |
 |---|---|
-| Cadastro de produtos | Nome, preço, imagem e quantidade são obrigatórios; código, unidade, descrição e especificações técnicas são opcionais. |
-| Controle de entrada | Toda entrada grava produto, quantidade, data/hora e funcionário, e atualiza o saldo automaticamente. |
-| Controle de saída | A saída desconta do saldo; o sistema **impede saldo negativo** (no código e por `CHECK` no banco). |
-| Controle de devoluções | A devolução fica **pendente** e só volta ao estoque quando o gerente confirma a condição da mercadoria. |
-| Estoque em tempo real | Um gatilho no PostgreSQL avisa o servidor (`pg_notify`) e o servidor avisa todas as telas abertas. |
-| Geração de orçamentos | Produtos, quantidades, preço unitário, total por item e total geral. |
-| Disponibilidade no orçamento | O orçamento **não é confirmado** se algum item estiver esgotado ou acima do estoque; o funcionário vê a lista de problemas. |
-| Validade dos orçamentos | Todo orçamento tem emissão e validade. Depois do prazo ele aparece como **expirado** e só pode ser **renovado**, o que confere de novo preços e disponibilidade. |
-| Alteração de preços | Só o gerente altera preços. Os itens do orçamento guardam o preço da emissão, e cada alteração vai para o histórico de preços. |
-| Autenticação | Login individual, senha com hash (scrypt + salt), sessão em cookie `HttpOnly`. |
-| Controle de permissões | Atendente: consulta, orçamentos, entradas, saídas e registro de devoluções. Gerente: também cadastro de produtos, preços, aprovação de devoluções, conferência e funcionários. As permissões são verificadas no servidor. |
-| Conferência de estoque | O gerente informa a contagem física; cada divergência vira um **ajuste** com quantidade anterior, corrigida e justificativa obrigatória. |
-| Histórico de movimentações | Tipo, produto, quantidade, saldo anterior e posterior, data e funcionário, com filtros por produto, tipo e período. |
+| Cadastro de produtos | nome, preço, imagem e quantidade são obrigatórios; código, unidade, descrição e especificações são opcionais |
+| Entradas | cada entrada guarda produto, quantidade, data e hora e quem registrou, e já atualiza o saldo |
+| Saídas | a saída desconta do saldo, e o saldo nunca fica negativo (o código barra e o banco também, com um `CHECK`) |
+| Devoluções | a devolução fica pendente e só volta para o estoque depois que o gerente confere a mercadoria |
+| Estoque em tempo real | um gatilho no PostgreSQL avisa o servidor (`pg_notify`), e o servidor avisa todas as telas abertas |
+| Orçamentos | cada orçamento tem produtos, quantidades, preço unitário, total por item e total geral |
+| Disponibilidade no orçamento | se algum item estiver esgotado ou pedido em quantidade maior que o estoque, o orçamento não é emitido e o funcionário vê o que está faltando |
+| Validade | todo orçamento tem data de emissão e de validade; depois do prazo ele aparece como expirado e só pode ser renovado, o que confere de novo preço e estoque |
+| Alteração de preços | só o gerente muda preços; o orçamento guarda o preço do dia em que foi feito, e cada mudança fica no histórico de preços |
+| Login | cada funcionário tem o seu usuário; a senha é guardada com hash (scrypt + salt) e a sessão fica num cookie `HttpOnly` |
+| Permissões | o atendente consulta, faz orçamentos, entradas, saídas e registra devoluções; o gerente faz tudo isso e também cadastra produtos, muda preços, aprova devoluções, faz conferência e cuida dos funcionários. As permissões são checadas no servidor, não só na tela |
+| Conferência de estoque | o gerente informa a contagem da prateleira; cada diferença vira um ajuste, com a quantidade antes, a corrigida e uma justificativa obrigatória |
+| Histórico | cada movimentação guarda tipo, produto, quantidade, saldo antes e depois, data e funcionário, com filtros por produto, tipo e período |
 
 ### Requisitos não funcionais
 
-| Requisito | Como foi atendido |
+| Requisito | Como atendemos |
 |---|---|
-| Usabilidade | Busca por código, medida ou especificação; quadro "Não confunda"; mensagens claras; alertas de reposição |
-| Interface responsiva | Layout para celular, tablet e computador (CSS Grid/Flexbox e media queries) |
-| Desempenho | Sem frameworks no front-end, índices nas tabelas mais consultadas |
-| Segurança dos dados | Senhas com hash, cookies `HttpOnly`/`SameSite=Strict`, consultas parametrizadas (contra SQL injection), dados escapados no HTML (contra XSS), *Content-Security-Policy*, bloqueio após 5 senhas erradas, validação das imagens enviadas, senha do banco fora do repositório |
-| Disponibilidade | Banco gerenciado na nuvem (Neon), fotos guardadas no próprio banco |
-| Confiabilidade | Movimentações em **transações** com `SELECT … FOR UPDATE`: duas vendas simultâneas não baixam o mesmo saldo, e saldo e histórico nunca ficam diferentes |
-| Sincronização | O banco avisa cada mudança de estoque e as telas atualizam na hora |
+| Usabilidade | busca por nome, código ou medida, quadro "Não confunda", mensagens de erro claras e aviso de estoque baixo |
+| Interface responsiva | funciona no celular, tablet e computador (CSS Grid, Flexbox e media queries) |
+| Desempenho | nenhum framework no front-end e índices nas tabelas mais consultadas |
+| Segurança | senhas com hash, cookies `HttpOnly`, `Secure` e `SameSite=Strict`, consultas parametrizadas contra SQL injection, texto escapado contra XSS, Content-Security-Policy, bloqueio depois de 5 senhas erradas, checagem das imagens enviadas e senha do banco fora do repositório |
+| Disponibilidade | banco gerenciado na nuvem (Neon) e site hospedado no Render; as fotos ficam guardadas no próprio banco |
+| Confiabilidade | as movimentações rodam em transações com `SELECT … FOR UPDATE`, então duas vendas ao mesmo tempo não descontam o mesmo saldo e o histórico sempre bate com o estoque |
+| Sincronização | toda mudança no estoque é avisada pelo banco e as telas abertas se atualizam na hora |
 
 ---
 
-## Estrutura de pastas
+## Organização das pastas
 
 ```
 lojaDoisIrmaos/
-├── server.js               # Servidor Express: páginas, fotos e API
+├── server.js               # servidor Express: páginas, fotos e API
 ├── package.json
-├── .env.example            # Modelo do arquivo de configuração (.env)
+├── .env.example            # modelo do arquivo .env
 ├── database/
-│   ├── schema.sql          # Tabelas, restrições, índices e gatilhos
-│   └── seed.sql            # Dados de exemplo
+│   ├── schema.sql          # tabelas, restrições, índices e gatilhos
+│   └── seed.sql            # dados de exemplo
 ├── src/
-│   ├── db.js               # Conexão com o PostgreSQL e transações
+│   ├── db.js               # conexão com o PostgreSQL e transações
 │   ├── setup-banco.js      # npm run setup / reset-db
-│   ├── autenticacao.js     # Sessões e permissões por perfil
-│   ├── seguranca.js        # Hash de senha e limite de tentativas
-│   ├── estoque.js          # Regra central de movimentação do estoque
-│   ├── imagens.js          # Validação e gravação das fotos
+│   ├── autenticacao.js     # sessões e permissões
+│   ├── seguranca.js        # hash de senha e limite de tentativas
+│   ├── estoque.js          # regra central das movimentações
+│   ├── imagens.js          # validação e gravação das fotos
 │   ├── tempo-real.js       # LISTEN/NOTIFY + Server-Sent Events
-│   ├── erros.js            # Erros HTTP e validação dos dados
+│   ├── erros.js            # erros HTTP e validação dos dados
 │   └── rotas/              # auth, produtos, estoque, orcamentos, usuarios
-└── public/                 # Front-end
-    ├── index.html          # Página inicial
-    ├── catalogo.html       # Catálogo com filtros
-    ├── produto.html        # Página do produto (/produto/<código>)
-    ├── lista.html          # Lista de orçamento do cliente
+└── public/                 # tudo o que roda no navegador
+    ├── index.html          # página inicial
+    ├── catalogo.html       # catálogo com filtros
+    ├── produto.html        # página de cada produto
+    ├── lista.html          # lista de orçamento do cliente
     ├── login.html
-    ├── css/                # estilo.css (geral e site) e painel.css
-    ├── js/                 # Um arquivo por página + comum.js, site.js e painel.js
-    ├── img/                # Logo e ilustrações dos produtos
-    └── painel/             # Páginas internas (estoque, orçamentos…)
+    ├── 404.html            # página de "não encontrado"
+    ├── css/                # estilo.css (site) e painel.css
+    ├── js/                 # um arquivo por página, mais comum.js, site.js e painel.js
+    ├── img/                # logo e ilustrações dos produtos
+    └── painel/             # páginas internas (estoque, orçamentos...)
 ```
 
-Para trocar endereço, telefone ou horários da loja, edite o objeto `LOJA` no início de `public/js/comum.js`
-e o cabeçalho/rodapé das páginas do site.
+Para mudar endereço, telefone ou horário da loja, edite o objeto `LOJA` no começo de `public/js/comum.js` e o
+rodapé das páginas do site.
 
 ---
 
-## Modelo do banco de dados
+## Banco de dados
 
 ```mermaid
 erDiagram
@@ -256,25 +287,25 @@ erDiagram
         bytea dados }
 ```
 
-Valores em dinheiro são guardados em **centavos** (inteiros) para evitar erros de arredondamento. O script
+Os valores em dinheiro ficam em centavos (números inteiros), para não ter problema de arredondamento. O script
 completo está em [`database/schema.sql`](database/schema.sql).
 
 ---
 
 ## Principais rotas da API
 
-| Método | Rota | Acesso | Descrição |
+| Método | Rota | Quem acessa | O que faz |
 |---|---|---|---|
-| POST | `/api/auth/login` | público | Login do funcionário |
-| GET | `/api/catalogo` | público | Produtos do catálogo (sem quantidade exata) |
-| GET | `/api/catalogo/:codigo` | público | Produto, semelhantes ("Não confunda") e relacionados |
-| GET | `/api/produtos` | funcionário | Estoque com quantidades em tempo real |
-| POST/PUT | `/api/produtos` | gerente | Cadastro e edição (preço gera histórico) |
-| POST | `/api/movimentacoes/entrada` · `/saida` | funcionário | Movimenta o estoque |
-| GET | `/api/movimentacoes` | funcionário | Histórico com filtros |
-| POST | `/api/devolucoes` | funcionário | Registra devolução (pendente) |
-| POST | `/api/devolucoes/:id/avaliar` | gerente | Aprova (volta ao estoque) ou reprova |
-| POST | `/api/conferencia` | gerente | Conferência físico × sistema |
-| POST | `/api/orcamentos` | funcionário | Emite orçamento (verifica estoque) |
-| POST | `/api/orcamentos/:id/renovar` · `/converter` · `/cancelar` | funcionário | Renovação, venda e cancelamento |
-| GET | `/api/eventos` | todos | Canal de tempo real (SSE) |
+| POST | `/api/auth/login` | qualquer um | login do funcionário |
+| GET | `/api/catalogo` | qualquer um | produtos do catálogo (sem mostrar a quantidade exata) |
+| GET | `/api/catalogo/:codigo` | qualquer um | um produto, os parecidos ("Não confunda") e os relacionados |
+| GET | `/api/produtos` | funcionário | estoque com as quantidades |
+| POST/PUT | `/api/produtos` | gerente | cadastro e edição (mudança de preço vai para o histórico) |
+| POST | `/api/movimentacoes/entrada` e `/saida` | funcionário | movimenta o estoque |
+| GET | `/api/movimentacoes` | funcionário | histórico, com filtros |
+| POST | `/api/devolucoes` | funcionário | registra uma devolução (fica pendente) |
+| POST | `/api/devolucoes/:id/avaliar` | gerente | aprova (volta ao estoque) ou reprova |
+| POST | `/api/conferencia` | gerente | conferência entre a prateleira e o sistema |
+| POST | `/api/orcamentos` | funcionário | emite um orçamento (confere o estoque antes) |
+| POST | `/api/orcamentos/:id/renovar`, `/converter` e `/cancelar` | funcionário | renova, transforma em venda ou cancela |
+| GET | `/api/eventos` | qualquer um | canal de atualização em tempo real (SSE) |
