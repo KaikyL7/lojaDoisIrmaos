@@ -4,8 +4,6 @@
 # Pacotes instalados pelo npm install
 node_modules/
 
-# Imagens enviadas pelo painel
-
 .DS_Store
 Thumbs.db
 .vscode/
