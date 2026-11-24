@@ -6,7 +6,7 @@ const path = require('node:path');
 const { pool } = require('./db');
 
 const pasta = path.join(__dirname, '..', 'database');
-const TABELAS = ['historico_precos', 'movimentacoes', 'orcamento_itens', 'orcamentos', 'devolucoes',
+const TABELAS = ['pedido_site_itens', 'pedidos_site', 'historico_precos', 'movimentacoes', 'orcamento_itens', 'orcamentos', 'devolucoes',
   'produtos', 'categorias', 'imagens', 'sessoes', 'usuarios'];
 
 async function main() {

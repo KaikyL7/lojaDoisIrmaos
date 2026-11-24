@@ -110,14 +110,18 @@ rotas.get('/orcamentos', exigirLogin, async (req, res) => {
   }
   if (req.query.q) {
     const termo = String(req.query.q).slice(0, 80);
-    params.push(`%${termo}%`, termo.replace('#', ''));
+    const numeros = termo.replace(/\D/g, '');
+    params.push(`%${termo}%`, termo.replace('#', ''), numeros ? `%${numeros}%` : '');
     const n = params.length;
-    where.push(`(o.cliente_nome ILIKE $${n - 1} OR o.cliente_telefone ILIKE $${n - 1} OR o.id::text = $${n})`);
+    // CPF/CNPJ é buscado só pelos números (com ou sem pontos e traço)
+    where.push(`(o.cliente_nome ILIKE $${n - 2} OR o.cliente_telefone ILIKE $${n - 2} OR o.id::text = $${n - 1}
+                 OR ($${n} <> '' AND regexp_replace(o.cliente_documento, '[^0-9]', '', 'g') LIKE $${n}))`);
   }
   const orcamentos = await consultar(
-    `SELECT o.id, o.cliente_nome, o.cliente_telefone, o.data_emissao, o.data_validade, o.total_centavos,
-            ${SITUACAO} AS situacao, u.nome AS funcionario,
-            (SELECT COUNT(*) FROM orcamento_itens i WHERE i.orcamento_id = o.id)::int AS qtd_itens
+    `SELECT o.id, o.cliente_nome, o.cliente_telefone, o.cliente_documento, o.data_emissao, o.data_validade,
+            o.total_centavos, ${SITUACAO} AS situacao, u.nome AS funcionario,
+            (SELECT COUNT(*) FROM orcamento_itens i WHERE i.orcamento_id = o.id)::int AS qtd_itens,
+            (SELECT pe.id FROM pedidos_site pe WHERE pe.orcamento_id = o.id LIMIT 1) AS pedido_site_id
        FROM orcamentos o JOIN usuarios u ON u.id = o.usuario_id
       ${where.length ? 'WHERE ' + where.join(' AND ') : ''}
       ORDER BY o.id DESC LIMIT 300`,
@@ -148,11 +152,26 @@ rotas.post('/orcamentos', exigirLogin, async (req, res) => {
     observacoes: texto(b.observacoes, 'observações', { max: 500 }),
   };
   const validadeDias = inteiro(b.validade_dias ?? VALIDADE_PADRAO_DIAS, 'validade (dias)', { min: 1, max: 30 });
+  // Orçamento montado a partir de um pedido feito pelo site
+  const pedidoId = b.pedido_id ? id(b.pedido_id, 'Pedido do site') : null;
 
   const novoId = await transacao(async (cliente) => {
+    if (pedidoId) {
+      const { rows } = await cliente.query('SELECT status FROM pedidos_site WHERE id = $1 FOR UPDATE', [pedidoId]);
+      if (!rows[0]) throw new ErroHttp(404, 'Pedido do site não encontrado.');
+      if (rows[0].status !== 'novo') throw new ErroHttp(409, 'Este pedido do site já foi atendido.');
+    }
     const itens = await montarItens(cliente, b.itens);
-    return gravarOrcamento(cliente, { dadosCliente, itens, validadeDias, usuarioId: req.usuario.id });
+    const criado = await gravarOrcamento(cliente, { dadosCliente, itens, validadeDias, usuarioId: req.usuario.id });
+    if (pedidoId) {
+      await cliente.query(
+        `UPDATE pedidos_site SET status = 'atendido', atendido_por = $2, data_atendimento = now(), orcamento_id = $3
+          WHERE id = $1`, [pedidoId, req.usuario.id, criado]
+      );
+    }
+    return criado;
   });
+  if (pedidoId) avisar('pedido', { id: pedidoId, status: 'atendido' });
   res.status(201).json({ id: novoId });
 });
 

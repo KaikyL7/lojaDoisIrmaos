@@ -115,6 +115,30 @@ CREATE TABLE IF NOT EXISTS orcamento_itens (
     subtotal_centavos        INTEGER      NOT NULL CHECK (subtotal_centavos >= 0)
 );
 
+-- Pedidos de orçamento feitos pelo site ---------------------------------
+--   O cliente informa nome e CPF antes de enviar a lista pelo WhatsApp.
+--   O pedido fica registrado para os funcionários atenderem no painel.
+CREATE TABLE IF NOT EXISTS pedidos_site (
+    id                INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    cliente_nome      VARCHAR(120) NOT NULL,
+    cliente_cpf       CHAR(11)     NOT NULL,            -- só os números
+    data              TIMESTAMPTZ  NOT NULL DEFAULT now(),
+    status            VARCHAR(10)  NOT NULL DEFAULT 'novo' CHECK (status IN ('novo', 'atendido')),
+    atendido_por      INTEGER      REFERENCES usuarios(id),
+    data_atendimento  TIMESTAMPTZ,
+    orcamento_id      INTEGER      REFERENCES orcamentos(id)
+);
+
+CREATE TABLE IF NOT EXISTS pedido_site_itens (
+    id              INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    pedido_id       INTEGER      NOT NULL REFERENCES pedidos_site(id) ON DELETE CASCADE,
+    produto_id      INTEGER      NOT NULL REFERENCES produtos(id),
+    produto_codigo  VARCHAR(30),
+    produto_nome    VARCHAR(120) NOT NULL,
+    unidade         VARCHAR(15)  NOT NULL,
+    quantidade      INTEGER      NOT NULL CHECK (quantidade > 0)
+);
+
 -- Histórico de movimentações (rastreabilidade) --------------------------
 --   entrada   = mercadoria recebida
 --   saida     = venda / retirada efetiva
@@ -152,6 +176,8 @@ CREATE INDEX IF NOT EXISTS idx_prod_categoria   ON produtos (categoria_id);
 CREATE INDEX IF NOT EXISTS idx_prod_grupo       ON produtos (grupo_semelhanca);
 CREATE INDEX IF NOT EXISTS idx_dev_status       ON devolucoes (status);
 CREATE INDEX IF NOT EXISTS idx_sessoes_expira   ON sessoes (expira_em);
+CREATE INDEX IF NOT EXISTS idx_pedidos_status   ON pedidos_site (status);
+CREATE INDEX IF NOT EXISTS idx_itens_pedido     ON pedido_site_itens (pedido_id);
 
 -- =====================================================================
 --  Tempo real: o próprio banco avisa quando o estoque muda (LISTEN/NOTIFY).
@@ -184,6 +210,18 @@ DROP TRIGGER IF EXISTS trg_avisar_devolucao ON devolucoes;
 CREATE TRIGGER trg_avisar_devolucao
     AFTER INSERT OR UPDATE ON devolucoes
     FOR EACH ROW EXECUTE FUNCTION avisar_devolucao();
+
+CREATE OR REPLACE FUNCTION avisar_pedido() RETURNS trigger AS $$
+BEGIN
+    PERFORM pg_notify('pedido', json_build_object('id', NEW.id, 'status', NEW.status)::text);
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_avisar_pedido ON pedidos_site;
+CREATE TRIGGER trg_avisar_pedido
+    AFTER INSERT OR UPDATE ON pedidos_site
+    FOR EACH ROW EXECUTE FUNCTION avisar_pedido();
 
 -- Mantém "atualizado_em" sempre correto
 CREATE OR REPLACE FUNCTION marcar_atualizacao() RETURNS trigger AS $$

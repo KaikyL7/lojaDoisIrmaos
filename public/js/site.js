@@ -87,9 +87,14 @@ function adicionarNaLista(p, quantidade) {
   salvarLista(lista);
 }
 
-function mensagemDaLista(lista) {
-  return 'Olá! Gostaria de um orçamento destes produtos:\n' +
+function mensagemDaLista(lista, cliente) {
+  let texto = 'Olá! Gostaria de um orçamento destes produtos:\n' +
     lista.map((i) => `- ${i.quantidade} ${i.unidade} de ${i.codigo ? i.codigo + ' - ' : ''}${i.nome}`).join('\n');
+  if (cliente) {
+    texto += `\n\nNome: ${cliente.nome}\nCPF: ${cliente.cpf}`;
+    if (cliente.pedido) texto += `\nPedido nº ${cliente.pedido} (feito pelo site)`;
+  }
+  return texto;
 }
 
 function atualizarContadorLista() {
@@ -110,3 +115,125 @@ document.addEventListener('DOMContentLoaded', () => {
   const campo = document.querySelector('.busca-topo input');
   if (campo && params.get('q') && location.pathname.startsWith('/catalogo')) campo.value = params.get('q');
 });
+
+// ---------------------------------------------------------------------
+// Antes de abrir o WhatsApp, o cliente informa nome e CPF.
+// O pedido fica registrado nos orçamentos do painel da loja.
+// ---------------------------------------------------------------------
+const CHAVE_NOME = 'dois-irmaos-nome';
+
+function formatarCpf(valor) {
+  const d = String(valor).replace(/\D/g, '').slice(0, 11);
+  return d.replace(/^(\d{3})(\d)/, '$1.$2').replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3').replace(/\.(\d{3})(\d)/, '.$1-$2');
+}
+
+/** Confere os dígitos verificadores do CPF. */
+function cpfValido(valor) {
+  const cpf = String(valor).replace(/\D/g, '');
+  if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+  for (const tamanho of [9, 10]) {
+    let soma = 0;
+    for (let i = 0; i < tamanho; i++) soma += Number(cpf[i]) * (tamanho + 1 - i);
+    if (((soma * 10) % 11) % 10 !== Number(cpf[tamanho])) return false;
+  }
+  return true;
+}
+
+let janelaDados = null;
+
+function criarJanelaDados() {
+  const dialog = document.createElement('dialog');
+  dialog.id = 'janela-dados';
+  dialog.setAttribute('aria-labelledby', 'dados-titulo');
+  dialog.innerHTML = `
+    <form novalidate>
+      <div class="dialog-topo">
+        <h2 id="dados-titulo">Seus dados para o orçamento</h2>
+        <button class="fechar" type="button" data-fechar aria-label="Fechar">&times;</button>
+      </div>
+      <div class="dialog-corpo">
+        <p class="ajuda">Assim a loja sabe para quem é o orçamento. Seu nome e CPF vão na mensagem do WhatsApp e ficam registrados só para o atendimento da loja.</p>
+        <div class="oculto" data-erro role="alert"></div>
+        <div class="campo">
+          <label for="dados-nome">Nome completo *</label>
+          <input id="dados-nome" name="nome" required minlength="3" maxlength="120" autocomplete="name">
+        </div>
+        <div class="campo">
+          <label for="dados-cpf">CPF *</label>
+          <input id="dados-cpf" name="cpf" required inputmode="numeric" maxlength="14" placeholder="000.000.000-00" autocomplete="off">
+        </div>
+        <div class="aviso aviso-sucesso oculto" data-sucesso role="status"></div>
+      </div>
+      <div class="dialog-rodape">
+        <button class="btn" type="button" data-fechar>Cancelar</button>
+        <button class="btn btn-primario" type="submit">Enviar pelo WhatsApp</button>
+      </div>
+    </form>`;
+  document.body.appendChild(dialog);
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog || e.target.closest('[data-fechar]')) dialog.close();
+  });
+  const cpf = dialog.querySelector('[name="cpf"]');
+  cpf.addEventListener('input', () => { cpf.value = formatarCpf(cpf.value); });
+  return dialog;
+}
+
+/**
+ * Abre a janela de nome e CPF; ao confirmar, registra o pedido e abre o WhatsApp.
+ *   itens:     [{ produto_id, quantidade }]
+ *   mensagem:  função que recebe { nome, cpf, pedido } e devolve o texto do WhatsApp
+ *   aoEnviar:  chamada depois que o pedido foi registrado (opcional)
+ */
+function pedirDadosEEnviar({ itens, mensagem, aoEnviar }) {
+  janelaDados = janelaDados || criarJanelaDados();
+  const form = janelaDados.querySelector('form');
+  const caixaErro = form.querySelector('[data-erro]');
+  const caixaSucesso = form.querySelector('[data-sucesso]');
+  const botao = form.querySelector('[type="submit"]');
+
+  form.reset();
+  try { form.elements.nome.value = localStorage.getItem(CHAVE_NOME) || ''; } catch { /* sem armazenamento */ }
+  caixaErro.classList.add('oculto');
+  caixaSucesso.classList.add('oculto');
+  form.querySelectorAll('.campo, .dialog-rodape [type="submit"]').forEach((el) => el.classList.remove('oculto'));
+  form.querySelector('.dialog-rodape [data-fechar]').textContent = 'Cancelar';
+
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    caixaErro.classList.add('oculto');
+    const nome = form.elements.nome.value.trim().replace(/\s+/g, ' ');
+    const cpf = form.elements.cpf.value;
+    let problema = '';
+    if (nome.length < 3) problema = 'Informe seu nome completo.';
+    else if (!cpfValido(cpf)) problema = 'CPF inválido. Confira os números digitados.';
+    if (problema) {
+      mostrarErro(caixaErro, new Error(problema));
+      (nome.length < 3 ? form.elements.nome : form.elements.cpf).focus();
+      return;
+    }
+
+    botao.disabled = true;
+    try {
+      const pedido = await api('/api/pedidos-site', { metodo: 'POST', dados: { nome, cpf, itens } });
+      try { localStorage.setItem(CHAVE_NOME, nome); } catch { /* sem armazenamento */ }
+      const link = linkWhatsApp(mensagem({ nome, cpf: formatarCpf(cpf), pedido: pedido.id }));
+      window.open(link, '_blank', 'noopener');
+
+      // Se o navegador bloquear a nova aba, o cliente ainda tem o botão
+      form.querySelectorAll('.campo, .dialog-rodape [type="submit"]').forEach((el) => el.classList.add('oculto'));
+      caixaSucesso.innerHTML = `<strong>Pedido nº ${pedido.id} registrado!</strong><br>
+        Agora é só enviar a mensagem no WhatsApp. Se ele não abriu, toque no botão abaixo.<br>
+        <a class="btn btn-primario" href="${esc(link)}" target="_blank" rel="noopener">Abrir WhatsApp</a>`;
+      caixaSucesso.classList.remove('oculto');
+      form.querySelector('.dialog-rodape [data-fechar]').textContent = 'Fechar';
+      if (aoEnviar) aoEnviar(pedido);
+    } catch (erro) {
+      mostrarErro(caixaErro, erro);
+    } finally {
+      botao.disabled = false;
+    }
+  };
+
+  janelaDados.showModal();
+  (form.elements.nome.value ? form.elements.cpf : form.elements.nome).focus();
+}

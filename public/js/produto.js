@@ -101,6 +101,18 @@ async function carregar() {
   }
 }
 
+// Antes de abrir o WhatsApp, pede nome e CPF (o pedido fica registrado na loja)
+document.getElementById('p-whatsapp').addEventListener('click', (e) => {
+  if (!produto) return;
+  e.preventDefault();
+  const qtd = quantidade();
+  const p = produto;
+  pedirDadosEEnviar({
+    itens: [{ produto_id: p.id, quantidade: qtd }],
+    mensagem: (cliente) => mensagemDaLista([{ ...p, quantidade: qtd }], cliente),
+  });
+});
+
 document.getElementById('menos').addEventListener('click', () => { campoQtd.value = Math.max(1, quantidade() - 1); atualizarWhatsApp(); });
 document.getElementById('mais').addEventListener('click', () => { campoQtd.value = quantidade() + 1; atualizarWhatsApp(); });
 campoQtd.addEventListener('input', () => produto && atualizarWhatsApp());

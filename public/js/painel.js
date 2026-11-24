@@ -12,7 +12,7 @@ const MENU = [
   { href: 'conferencia.html', texto: 'Conferência de estoque', gerente: true },
   { grupo: 'Atendimento' },
   { href: 'orcamento-novo.html', texto: 'Novo orçamento' },
-  { href: 'orcamentos.html', texto: 'Orçamentos' },
+  { href: 'orcamentos.html', texto: 'Orçamentos', contador: 'pedidos' },
   { grupo: 'Administração', gerente: true },
   { href: 'funcionarios.html', texto: 'Funcionários', gerente: true },
 ];
@@ -72,14 +72,21 @@ function montarMenu() {
   });
 }
 
+function mostrarContador(nome, total) {
+  const el = document.querySelector(`[data-contador="${nome}"]`);
+  if (!el) return;
+  el.textContent = total;
+  el.classList.toggle('oculto', total === 0);
+}
+
 async function atualizarContadores() {
   try {
     const { devolucoes } = await api('/api/devolucoes?status=pendente');
-    const el = document.querySelector('[data-contador="devolucoes"]');
-    if (el) {
-      el.textContent = devolucoes.length;
-      el.classList.toggle('oculto', devolucoes.length === 0);
-    }
+    mostrarContador('devolucoes', devolucoes.length);
+  } catch { /* sem contador */ }
+  try {
+    const { pedidos } = await api('/api/pedidos-site?status=novo');
+    mostrarContador('pedidos', pedidos.length);
   } catch { /* sem contador */ }
 }
 
@@ -100,7 +107,7 @@ async function iniciarPainel({ somenteGerente = false } = {}) {
   montarMenu();
   aplicarPermissoes();
   atualizarContadores();
-  ouvirTempoReal(['devolucao', 'estoque'], atualizarContadores);
+  ouvirTempoReal(['devolucao', 'estoque', 'pedido'], atualizarContadores);
   return USUARIO;
 }
 

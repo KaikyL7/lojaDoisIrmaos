@@ -421,3 +421,10 @@ table.tabela {
 .leg-entrada::before { background: var(--grafite); }
 .leg-saida::before { background: var(--ouro); }
 .cabecalho-pagina h1 { font-size: 1.75rem; }
+
+/* Pedidos do site */
+.itens-pedido { margin: 0; padding-left: 1.1em; font-size: 0.88rem; }
+.itens-pedido li + li { margin-top: 0.15em; }
+#aviso-pedido { margin-bottom: 1rem; }
+.pedidos-site { margin-bottom: 1.25rem; border-color: var(--ouro); }
+.pedidos-site > .ajuda { margin: 0 0 0.75rem; }

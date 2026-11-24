@@ -6,6 +6,8 @@ const formOrc = document.getElementById('form-orc');
 
 let produtos = [];
 const itens = new Map(); // produto_id -> quantidade
+// Orçamento aberto a partir de um pedido do site (?pedido=12)
+const pedidoId = Number(new URLSearchParams(location.search).get('pedido')) || null;
 
 function produto(id) {
   return produtos.find((p) => p.id === id);
@@ -102,6 +104,7 @@ formOrc.addEventListener('submit', async (e) => {
   caixa.classList.add('oculto');
   const dados = dadosFormulario(formOrc);
   dados.itens = [...itens.entries()].map(([produto_id, quantidade]) => ({ produto_id, quantidade }));
+  if (pedidoId) dados.pedido_id = pedidoId;
   const botao = document.getElementById('btn-emitir');
   botao.disabled = true;
   try {
@@ -116,8 +119,38 @@ formOrc.addEventListener('submit', async (e) => {
   }
 });
 
+/** Preenche cliente e itens com o que o cliente pediu pelo site. */
+async function carregarPedido() {
+  const aviso = document.getElementById('aviso-pedido');
+  try {
+    const { pedido } = await api('/api/pedidos-site/' + pedidoId);
+    if (pedido.status !== 'novo') {
+      aviso.className = 'aviso aviso-erro';
+      aviso.innerHTML = `O pedido do site <strong>#${pedido.id}</strong> já foi atendido. <a href="/painel/orcamentos.html">Ver orçamentos</a>`;
+      return;
+    }
+    formOrc.cliente_nome.value = pedido.cliente_nome;
+    formOrc.cliente_documento.value = pedido.cliente_cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4');
+    const foraDoEstoque = [];
+    for (const i of pedido.itens) {
+      const p = produto(i.produto_id);
+      if (!p || p.quantidade === 0) { foraDoEstoque.push(i.nome); continue; }
+      itens.set(p.id, i.quantidade);
+    }
+    desenharItens();
+    desenharResultados();
+    aviso.className = 'aviso aviso-info';
+    aviso.innerHTML = `Orçamento do <strong>pedido #${pedido.id}</strong> feito pelo site por <strong>${esc(pedido.cliente_nome)}</strong>.
+      Confira as quantidades antes de emitir.${foraDoEstoque.length
+        ? `<br>Sem estoque no momento (não incluídos): ${foraDoEstoque.map(esc).join(', ')}.` : ''}`;
+  } catch (erro) {
+    mostrarErro(aviso, erro);
+  }
+}
+
 iniciarPainel().then(async () => {
   await carregarProdutos();
+  if (pedidoId) await carregarPedido();
   campoBusca.focus();
   // Se alguém vender o item enquanto o orçamento é montado, a tela avisa na hora
   ouvirTempoReal(['estoque'], carregarProdutos);

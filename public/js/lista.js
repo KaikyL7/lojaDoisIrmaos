@@ -1,4 +1,5 @@
-// Lista de orçamento do cliente (guardada no navegador) enviada pelo WhatsApp
+// Lista de orçamento do cliente (guardada no navegador) enviada pelo WhatsApp.
+// Ao enviar, o cliente informa nome e CPF e o pedido fica registrado nos orçamentos da loja.
 
 function desenhar() {
   const lista = lerLista();
@@ -13,14 +14,23 @@ function desenhar() {
       <span>${esc(i.unidade)}</span>
       <button class="btn btn-pequeno btn-perigo" type="button" data-remover="${n}">Remover</button>
     </div>`).join('');
-  document.getElementById('enviar').href = linkWhatsApp(mensagemDaLista(lista));
 }
+
+document.getElementById('enviar').addEventListener('click', () => {
+  const lista = lerLista();
+  if (!lista.length) return;
+  pedirDadosEEnviar({
+    itens: lista.map((i) => ({ produto_id: i.id, quantidade: i.quantidade })),
+    mensagem: (cliente) => mensagemDaLista(lista, cliente),
+    aoEnviar: () => { salvarLista([]); desenhar(); }, // o pedido já ficou registrado na loja
+  });
+});
 
 document.getElementById('itens').addEventListener('change', (e) => {
   const n = e.target.dataset.indice;
   if (n === undefined) return;
   const lista = lerLista();
-  lista[n].quantidade = Math.max(1, Math.floor(Number(e.target.value)) || 1);
+  lista[n].quantidade = Math.min(9999, Math.max(1, Math.floor(Number(e.target.value)) || 1));
   salvarLista(lista);
   desenhar();
 });

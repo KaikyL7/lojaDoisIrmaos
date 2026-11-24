@@ -51,6 +51,7 @@ app.use('/api/auth', require('./src/rotas/auth'));
 app.use('/api', require('./src/rotas/produtos'));
 app.use('/api', require('./src/rotas/estoque'));
 app.use('/api', require('./src/rotas/orcamentos'));
+app.use('/api', require('./src/rotas/pedidos'));
 app.use('/api', require('./src/rotas/usuarios'));
 app.use('/api', (req, res, next) => next(new ErroHttp(404, 'Rota não encontrada.')));
 

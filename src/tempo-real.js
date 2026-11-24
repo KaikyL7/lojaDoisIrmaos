@@ -51,7 +51,7 @@ function avisar(evento, dados = {}) {
 }
 
 /**
- * Conexão dedicada que fica escutando os canais "estoque" e "devolucao".
+ * Conexão dedicada que fica escutando os canais "estoque", "devolucao" e "pedido".
  * No Neon, o endereço com "-pooler" não aceita LISTEN, então usamos o endereço direto.
  */
 async function escutarBanco() {
@@ -71,6 +71,7 @@ async function escutarBanco() {
     await ouvinte.connect();
     await ouvinte.query('LISTEN estoque');
     await ouvinte.query('LISTEN devolucao');
+    await ouvinte.query('LISTEN pedido');
     escutandoBanco = true;
     ouvinte.on('notification', (msg) => {
       let dados = {};
