@@ -37,7 +37,7 @@ function montarMenu() {
   aside.className = 'menu-lateral';
   aside.id = 'menu';
   aside.innerHTML = `
-    <a class="logo-menu" href="/painel/index.html"><img src="/img/logo-horizontal.jpg" alt="Dois Irmãos – Casa & Obra"></a>
+    <a class="logo-menu" href="/painel/index.html"><img src="/img/logo-horizontal.png" alt="Dois Irmãos – Casa & Obra"></a>
     <nav aria-label="Menu do painel">${itens.join('')}</nav>
     <div class="usuario-menu">
       <strong>${esc(USUARIO.nome)}</strong>
@@ -47,7 +47,7 @@ function montarMenu() {
 
   const barra = document.createElement('div');
   barra.className = 'barra-movel';
-  barra.innerHTML = `<img src="/img/logo-horizontal.jpg" alt="Dois Irmãos – Casa & Obra">
+  barra.innerHTML = `<img src="/img/logo-horizontal.png" alt="Dois Irmãos – Casa & Obra">
     <button class="btn btn-pequeno" type="button" id="btn-menu" aria-controls="menu" aria-expanded="false">☰ Menu</button>`;
 
   const layout = document.querySelector('.layout');
